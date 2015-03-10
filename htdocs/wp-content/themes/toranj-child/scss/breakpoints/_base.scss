@@ -1,0 +1,235 @@
+/* 
+Child theme styles for Anton Smit website built on the Toranj theme:
+http://themeforest.net/item/toranj-responsive-creative-wordpress-theme/8977823
+*/
+
+.dark-template {
+    strong, h2, em {
+        color: $black;
+    }
+    
+    hr {
+        box-shadow: none;
+        //border-width: 2px;
+    }
+}
+
+.regular-page {
+    hr {
+        border-top: 1px solid black;
+    }
+
+}
+
+#side-bar, 
+#inner-bar, 
+.page-side, 
+#main-content 
+.nicescroll-rails, 
+.page-main, 
+.sub-menu, 
+#navigation li.current-menu-item a, 
+#navigation li.current-menu-item a,
+.regular-page,
+.portfolio-md-detail
+{
+    background: $white;
+}
+
+.vc_separator.vc_sep_color_grey .vc_sep_line {
+    border-color: black;
+}
+
+.page-side .title, 
+#main-content.dark-template,
+strong, 
+em,
+.regular-page h2
+{
+    color: $black;
+}
+
+.portfolio-nav li a:hover i {
+    color: $white;
+}
+
+#inner-bar {
+    box-shadow: none;
+}
+
+// this is overwriting a plugin styles (owwwlab-kenburn)
+%raleway-extra-light {
+    color: $white !important;
+    font-weight: 200 !important;
+    font-family: 'ralewayextralight' !important;
+}
+
+.owl-caption .title,
+.owl-caption .sub-title {
+    @extend %raleway-extra-light;
+    font-size: 35px !important;
+}
+
+.project-title {
+    @extend %raleway-extra-light;
+
+    &:after {
+        opacity: 0.5;
+    }
+}
+
+p {
+    margin-bottom: 20px;
+    color: $black;
+}
+
+blockquote {
+    font-size: 13px;
+}
+
+.side-title {
+    display: inline-block;
+    border-bottom: thick solid;
+    padding-bottom: 8px;
+}
+
+.page-side {
+    .title span {
+        @extend .side-title;
+    }
+}
+
+.dark-template {
+    hr {
+        border-color: inherit;
+    }
+}
+
+.side-content {
+    ul.list-items {
+        margin-bottom: 20px;
+
+        li {
+            font-size: 13px;
+            margin-bottom: 0;
+            color: $black;
+        }
+    }
+
+
+    ul li {
+        margin-bottom: 4px;
+    }
+}
+
+.side-content .fgj-group-list {
+    //background: red;
+
+    list-style-type: none;
+    padding-left: 0;
+
+    li {
+        font-size: 12px;
+        color: black;
+
+        ul {
+            list-style-type: none;
+            padding-left: 10px;
+            
+            li {
+                margin-bottom: 0;
+
+                &:before {
+                    content: "- ";
+                }
+            }
+        }
+    }
+}
+
+.owl-caption[poscenter="true"] {
+    //background: blue;
+}
+
+#logo-wrapper {
+    img {
+        max-width: 70%;
+    }
+}
+
+.cap-toranj {
+    top: 80px;
+    bottom: auto;
+    box-sizing: border-box;
+    padding: 20px;
+    background: rgba(250,250,245,0.9);
+    width: 30%;
+
+    .cap-des {
+        font-size: 13px;
+        line-height: 19.5px;
+        color: black;
+        text-shadow: none;
+
+        p {
+            margin-bottom: 20px;
+
+            &:last-child {
+                margin-bottom: 0;                
+            }   
+        }
+    }
+
+    .cap-title {
+        font-size: 38px;
+        font-weight: 800;
+        line-height: 41.7999992370606px;
+        color: black;
+        text-shadow: none;
+        margin-bottom: 20px;
+
+        @extend .side-title;
+
+        &:after {
+            display: none;
+        }
+
+        span {
+            display: none;
+        }
+    }
+}
+
+.project-content {
+    .body {
+        .contents {
+            background: $white;
+        }
+    }
+}
+
+.section-title {
+    font-size: 38px;
+        font-weight: 800;
+        line-height: 41.7999992370606px;
+        color: black;
+        text-shadow: none;
+        margin-bottom: 20px;
+
+        @extend .side-title;
+
+        &:after {
+            display: none;
+        }
+
+        span {
+            display: none;
+        }
+}
+
+.fgj-textblock {
+    .wpb_wrapper {
+        padding: 25px;
+        background: white;
+    }
+}

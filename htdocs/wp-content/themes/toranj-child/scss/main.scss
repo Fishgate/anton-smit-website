@@ -1,0 +1,30 @@
+/*
+The media queries for this theme are not mobile first,
+the _base.scss stylesheet refers to all desktop sizes
+or anything over 992px wide. From there work your way
+down through the media queries.
+*/
+
+// Partials
+@import "partials/variables";
+//@import "partials/typography";
+@import "partials/mixins";
+
+// Breakpoints
+@import "breakpoints/base";
+
+@media only screen and (max-width: 992px){
+    @import "breakpoints/992down";
+}
+
+@media only screen and (max-width: 768px){
+    @import "breakpoints/768down";
+}
+
+@media only screen and (max-width: 600px){
+    @import "breakpoints/600down";
+}
+
+@media only screen and (max-width: 480px){
+    @import "breakpoints/480down";
+}

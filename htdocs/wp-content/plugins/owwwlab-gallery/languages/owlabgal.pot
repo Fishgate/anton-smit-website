@@ -1,0 +1,317 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: owwwlab gallery Plugin - For TORANJ\n"
+"POT-Creation-Date: 2014-09-15 17:22+0330\n"
+"PO-Revision-Date: 2014-09-15 17:24+0330\n"
+"Last-Translator: owwwlab <owwwlab@gmail.com>\n"
+"Language-Team: owwwlab <owwwlab@gmail.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_ajax.php:47
+msgid "Please Try Again"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_ajax.php:131
+msgid "Remove Embed"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_ajax.php:134
+#, php-format
+msgid "No oEmbed Results Found for %s. View more info at"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_field.php:459
+msgid "Add Group"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_field.php:460
+msgid "Remove Group"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:250
+msgid "Add Row"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:306
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:706
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:768
+msgid "Remove"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:601
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:635
+msgid "No terms"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:674
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:728
+msgid "Add or Upload File"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:695
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:760
+msgid "Remove Image"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:706
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:768
+msgid "File:"
+msgstr ""
+
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:706
+#: 3rd-party/cmb/helpers/cmb_Meta_Box_types.php:768
+msgid "Download"
+msgstr ""
+
+#: 3rd-party/cmb/init.php:258
+msgid "Clear"
+msgstr ""
+
+#: 3rd-party/cmb/init.php:259
+msgid "Default"
+msgstr ""
+
+#: 3rd-party/cmb/init.php:260
+msgid "Select Color"
+msgstr ""
+
+#: 3rd-party/cmb/init.php:261
+msgid "Current Color"
+msgstr ""
+
+#: 3rd-party/cmb/init.php:288
+msgid "Select / Deselect All"
+msgstr ""
+
+#: 3rd-party/cmb/init.php:1177
+msgid "Save"
+msgstr ""
+
+#: gallery-metaboxes.php:76
+msgid "gallery Metabox"
+msgstr ""
+
+#: gallery-metaboxes.php:93
+msgid "Short Description"
+msgstr ""
+
+#: gallery-metaboxes.php:94
+msgid ""
+"Input a very abstract description for the Photo, do not exceed 200 "
+"characters for the best visual result"
+msgstr ""
+
+#: gallery-metaboxes.php:100
+msgid "Description"
+msgstr ""
+
+#: gallery-metaboxes.php:122
+msgid "Grid ratio"
+msgstr ""
+
+#: gallery-metaboxes.php:123
+msgid ""
+"ex. 2 or 1, leave blank to not set<br>Ratio of this item thumbnail against "
+"others, only will apply if you use the grid layout for gallery list."
+msgstr ""
+
+#: gallery-metaboxes.php:129
+msgid "Grid sizer"
+msgstr ""
+
+#: gallery-metaboxes.php:130
+msgid ""
+"Use this image ratio as the base for the grid sizes? please check one image "
+"in each album, normally your smallest image."
+msgstr ""
+
+#: gallery-widget.php:14
+msgid "Gallery widget for your sidebar"
+msgstr ""
+
+#: gallery-widget.php:18
+msgid "Latest shots from gallery by Toranj"
+msgstr ""
+
+#: gallery-widget.php:120
+msgid "Latest shopts"
+msgstr ""
+
+#: gallery-widget.php:126
+msgid "Title:"
+msgstr ""
+
+#: gallery-widget.php:130
+msgid "Number of photos:"
+msgstr ""
+
+#: gallery-widget.php:134
+msgid "Album slug:"
+msgstr ""
+
+#: owwwlab-gallery.php:128 owwwlab-gallery.php:243
+msgid "gallery"
+msgstr ""
+
+#: owwwlab-gallery.php:131 owwwlab-gallery.php:452
+msgid "album"
+msgstr ""
+
+#: owwwlab-gallery.php:242
+msgid "owwwlab Gallery"
+msgstr ""
+
+#: owwwlab-gallery.php:244
+msgid "Add New"
+msgstr ""
+
+#: owwwlab-gallery.php:245
+msgid "Add New Photo"
+msgstr ""
+
+#: owwwlab-gallery.php:246
+msgid "Edit photo"
+msgstr ""
+
+#: owwwlab-gallery.php:247
+msgid "New photo"
+msgstr ""
+
+#: owwwlab-gallery.php:248
+msgid "View photo"
+msgstr ""
+
+#: owwwlab-gallery.php:249
+msgid "Search Photos"
+msgstr ""
+
+#: owwwlab-gallery.php:250
+msgid "No Photo found."
+msgstr ""
+
+#: owwwlab-gallery.php:251
+msgid "No photos found in trash."
+msgstr ""
+
+#: owwwlab-gallery.php:253
+msgid "Gallery"
+msgstr ""
+
+#: owwwlab-gallery.php:345
+msgid "Order"
+msgstr ""
+
+#: owwwlab-gallery.php:346
+msgid "Thumbnail"
+msgstr ""
+
+#: owwwlab-gallery.php:347
+msgid "Comments"
+msgstr ""
+
+#: owwwlab-gallery.php:392
+msgid "Show All "
+msgstr ""
+
+#: owwwlab-gallery.php:451
+msgid "Albums"
+msgstr ""
+
+#: owwwlab-gallery.php:453
+msgid "All albums"
+msgstr ""
+
+#: owwwlab-gallery.php:454
+msgid "Edit album"
+msgstr ""
+
+#: owwwlab-gallery.php:455
+msgid "View album"
+msgstr ""
+
+#: owwwlab-gallery.php:456
+msgid "Update album"
+msgstr ""
+
+#: owwwlab-gallery.php:457
+msgid "Add New album"
+msgstr ""
+
+#: owwwlab-gallery.php:458
+msgid "New album Name"
+msgstr ""
+
+#: owwwlab-gallery.php:459
+msgid "Parent album"
+msgstr ""
+
+#: owwwlab-gallery.php:460
+msgid "Parent album:"
+msgstr ""
+
+#: owwwlab-gallery.php:461
+msgid "Search albums"
+msgstr ""
+
+#: owwwlab-gallery.php:462
+msgid "Popular albums"
+msgstr ""
+
+#: owwwlab-gallery.php:463
+msgid "Separate albums with commas"
+msgstr ""
+
+#: owwwlab-gallery.php:464
+msgid "Add or Remove albums"
+msgstr ""
+
+#: owwwlab-gallery.php:465
+msgid "No albums found"
+msgstr ""
+
+#: owwwlab-gallery.php:555 owwwlab-gallery.php:602
+msgid "Choose Cover Image"
+msgstr ""
+
+#: owwwlab-gallery.php:562 owwwlab-gallery.php:612
+msgid "Select Image"
+msgstr ""
+
+#: owwwlab-gallery.php:563 owwwlab-gallery.php:613
+msgid "Choose one image as the cover of this Album."
+msgstr ""
+
+#: owwwlab-gallery.php:569 owwwlab-gallery.php:621
+msgid "Choose Layout type"
+msgstr ""
+
+#: owwwlab-gallery.php:575
+msgid ""
+"If you want to show Photos items in this Album in a separate page, please "
+"select a fron-end layout for it."
+msgstr ""
+
+#: owwwlab-gallery.php:629
+msgid ""
+"If you want to show Photo items in this album in a separate page, please "
+"select a fron-end layout for it."
+msgstr ""
+
+#: owwwlab-gallery.php:646
+msgid "Grid"
+msgstr ""
+
+#: owwwlab-gallery.php:647
+msgid "Vertical images - Horizaontal scrolling"
+msgstr ""

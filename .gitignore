@@ -1,0 +1,17 @@
+/htdocs/.htaccess
+/htdocs/.htaccess.orig
+/htdocs/wp-config-local.php
+/htdocs/wp-content/upgrade/*
+/htdocs/wp-content/backups/*
+/htdocs/sitemap.xml
+/htdocs/sitemap.xml.gz 
+readme.html
+license.txt
+.log
+.DS_Store
+/nbproject/private/
+/htdocs/aestheticpersonnel.com/*
+/htdocs/isahostel.co.za/*
+/project/*
+/resources/*
+/htdocs/wp-snapshots/*
