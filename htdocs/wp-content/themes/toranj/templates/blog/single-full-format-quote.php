@@ -40,7 +40,7 @@
 						<div class="post-format-quote">
 							<div class="quote-wrapper set-bg rev-blur">
 								<?php if ( has_post_thumbnail() ): ?>
-									<?php the_post_thumbnail('blog-thumb',array(
+									<?php the_post_thumbnail('full',array(
 										'class' => 'rev-blur',
 										'style' => 'display:none;'
 									)); ?>

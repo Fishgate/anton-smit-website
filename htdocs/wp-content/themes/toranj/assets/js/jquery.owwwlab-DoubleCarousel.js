@@ -106,9 +106,18 @@ if ( typeof Object.create !== 'function'  ){ // browser dose not support Object.
           .to(dcs.leftWrapper,0,{y:-dcs.leftDirectionSign*dcs.currentSlideIndex*cHeight});  
 
           dcs.leftSide.removeAttr('style');
-          dcs.leftSide.width(Math.floor(dcs.leftSide.width()));
+
+          var leftWidth=Math.floor(dcs.leftSide.width());
+          
+          dcs.leftSide.width(leftWidth);
+
           dcs.rightSide.removeAttr('style');
-          dcs.rightSide.width(Math.floor(dcs.rightSide.width()));
+          var rightWidth=Math.floor(dcs.rightSide.width())+1;
+
+          dcs.rightSide.css({
+            'left':leftWidth,
+            'width':rightWidth
+          });
 
       },
       nextSlide : function(){
@@ -218,6 +227,8 @@ if ( typeof Object.create !== 'function'  ){ // browser dose not support Object.
         });
       },
       keyboardControll:function(){
+        var self=this;
+        
         $(document).keydown(function(e) {
           switch(e.which) {
               case 38: // up

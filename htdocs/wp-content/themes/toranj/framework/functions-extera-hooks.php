@@ -126,10 +126,10 @@ if ( ! function_exists('owlab_custom_get_posts') ){
 
 	function owlab_custom_get_posts( $query ) {
 
-		$post_types = array('owlabgal','owlabpfl');
+		$post_types = array('owlabgal','owlabpfl','owlabbulkg');
 		
 		if ( ! is_admin() ){
-			if( is_tax( 'owlabgal_album' ) || is_post_type_archive( $post_types ) || is_tax("owlabpfl_group") ) { 
+			if( is_tax( 'owlabgal_album' ) || is_post_type_archive( $post_types ) || is_tax("owlabpfl_group") || is_tax('owlabbulkg_category') ) { 
 
 				$query->query_vars['posts_per_page'] = -1;
 				//$query->query_vars['orderby'] = 'menu_order';
@@ -177,4 +177,147 @@ $links = str_replace(')', ')</span>', $links);
 return $links;
 }
 add_filter('get_archives_link', 'owlab_archive_count_no_brackets');
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * add post type archives to menu selection
+ * from: http://stackoverflow.com/questions/20879401/how-to-add-custom-post-type-archive-to-men
+ * ----------------------------------------------------------------------------------------
+ */
+add_action('admin_head-nav-menus.php', 'wpclean_add_metabox_menu_posttype_archive');
+
+function wpclean_add_metabox_menu_posttype_archive() {
+	add_meta_box('wpclean-metabox-nav-menu-posttype', __('Post type Archives','toranj'), 'wpclean_metabox_menu_posttype_archive', 'nav-menus', 'side', 'default');
+}
+
+function wpclean_metabox_menu_posttype_archive() {
+	$post_types = get_post_types(array('show_in_nav_menus' => true, 'has_archive' => true), 'object');
+
+	if ($post_types) :
+	    $items = array();
+	    $loop_index = 999999;
+
+	    foreach ($post_types as $post_type) {
+	        $item = new stdClass();
+	        $loop_index++;
+
+	        $item->object_id = $loop_index;
+	        $item->db_id = 0;
+	        $item->object = 'post_type_' . $post_type->query_var;
+	        $item->menu_item_parent = 0;
+	        $item->type = 'custom';
+	        $item->title = $post_type->labels->name;
+	        $item->url = get_post_type_archive_link($post_type->query_var);
+	        $item->target = '';
+	        $item->attr_title = '';
+	        $item->classes = array();
+	        $item->xfn = '';
+
+	        $items[] = $item;
+	    }
+
+	    $walker = new Walker_Nav_Menu_Checklist(array());
+
+	    echo '<div id="posttype-archive" class="posttypediv">';
+	    echo '<div id="tabs-panel-posttype-archive" class="tabs-panel tabs-panel-active">';
+	    echo '<ul id="posttype-archive-checklist" class="categorychecklist form-no-clear">';
+	    echo walk_nav_menu_tree(array_map('wp_setup_nav_menu_item', $items), 0, (object) array('walker' => $walker));
+	    echo '</ul>';
+	    echo '</div>';
+	    echo '</div>';
+
+	    echo '<p class="button-controls">';
+	    echo '<span class="add-to-menu">';
+	    echo '<input type="submit"' . disabled(1, 0) . ' class="button-secondary submit-add-to-menu right" value="' . __('Add to Menu', 'andromedamedia') . '" name="add-posttype-archive-menu-item" id="submit-posttype-archive" />';
+	    echo '<span class="spinner"></span>';
+	    echo '</span>';
+	    echo '</p>';
+
+	endif;
+}
+
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * add sharing to the page 
+ * ----------------------------------------------------------------------------------------
+ */
+
+function owlab_add_sharing($return=false) {
+	
+	//check if we have the option tree
+	if ( !function_exists('ot_get_option')) return;
+
+	//check if it is enabled
+	if ( ot_get_option('enable_social_sharing','off') == 'off') return;
+
+	//get the sharing media
+	$websites = ot_get_option('sharing_social_medias',array());
+
+
+	$links = array();
+	foreach ($websites as $site) :
+		
+		$media = isset($site['sharing_websites']) ? $site['sharing_websites'] : '';
+
+		switch ($media) {
+			case 'facebook':
+				$pre_link = 'https://www.facebook.com/sharer/sharer.php?u={url}&t={title}';
+				break;
+			case 'twitter':
+				$pre_link = 'https://twitter.com/share?url={url}';
+				break;
+			case 'google-plus':
+				$pre_link = 'https://plus.google.com/share?url={url}';
+				break;
+			case 'digg':
+				$pre_link = 'http://digg.com/submit?url={url}';
+				break;
+			case 'pinterest':
+				$pre_link = 'https://pinterest.com/pin/create/bookmarklet/?media={img}&url={url}';
+				break;
+			case 'linkedin':
+				$pre_link = 'http://www.linkedin.com/shareArticle?url={url}&title={title}';
+				break;
+			case 'buffer':
+				$pre_link = 'http://bufferapp.com/add?text={title}&url={url}';
+				break;
+			case 'tumblr':
+				$pre_link = 'http://www.tumblr.com/share/link?url={url}&name={title}';
+				break;
+			case 'reddit':
+				$pre_link = 'http://reddit.com/submit?url={url}&title={title}';
+				break;
+			case 'stumbleUpon':
+				$pre_link = 'http://www.stumbleupon.com/submit?url={url}&title={title}';
+				break;
+			case 'delicious':
+				$pre_link = 'https://delicious.com/save?v=5&provider=&noui&jump=close&url={url}&title={title}';
+				break;
+			default:
+				$pre_link = '';
+				break;
+		}
+		
+		if ($pre_link != '')
+			$this_link = '<li><a class="sharing-link share-'.$media.'" href="'.$pre_link.'" target="_blank">'.$site['title'].'</a></li>';
+		
+		$links[] = $this_link; 
+	endforeach; 
+
+	$output = '<a id="social-sharing-trigger" href="#"><i class="fa fa-share-alt"></i></a>'; 
+	$output .= '<div id="social-sharing"><a class="share-close"><i class="fa fa-close"></i></a>';
+	$output .= '<div class="vcenter-wrapper"><div class="vcenter">';
+	$output .= '<div class="sharing-icon"><i class="fa fa-share-alt"></i></div>';
+	$output .= '<ul>'.implode( '', $links).'</ul>';
+	$output .='</div></div></div>';
+
+	if ($return)
+		return $output;
+	else
+		echo $output;
+	
+}
+
+add_action('owlab_after_content','owlab_add_sharing');
 

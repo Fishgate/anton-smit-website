@@ -12,16 +12,17 @@
 <div id="main-content" class="dark-template">
 	<div class="page-wrapper">
 
+		<?php if (ot_get_option("portfolio_grid_show_sidebar")== "on"): ?>
 		<!-- Sidebar -->
 		<div class="page-side ajax-element">
 			<div class="inner-wrapper vcenter-wrapper">
 				<div class="side-content vcenter">
 					<div class="title">
-						<span class="second-part"><?php _e('Browse Group','toranj'); ?></span>
+						<span class="second-part"><?php echo ot_get_option('portfolio_group_upper_title',__('Browse Group','toranj')); ?></span>
 						<span><?php echo $the_group->name; ?></span>
 					</div>
 					
-					<p><?php echo $the_group->description; ?></p>
+					<p><?php echo wpautop($the_group->description); ?></p>
 
 					<?php if (count($the_group_childs) >0 ): ?>
 					<div class="grid-filters-wrapper">
@@ -40,9 +41,10 @@
 			</div>
 		</div>
 		<!-- /Sidebar -->
+		<?php endif; ?>
 
 		<!-- Main Contents -->
-		<div class="page-main ajax-element">
+		<div class="page-main ajax-element <?php if (ot_get_option("portfolio_grid_show_sidebar")!= "on"):  ?>no-side <?php endif; ?>">
 			<!-- portfolio wrapper -->	
 			<div class="grid-portfolio<?php if ( $the_group->owlabpfl_same_ratio_grid =="on") echo " same-ratio-items"; ?><?php if (ot_get_option('portfolio_grid_nopadding') =="on") echo" no-padding";?>"
 				lg-cols="<?php echo ot_get_option('portfolio_grid_larg_screen_column_count',3); ?>" md-cols="<?php echo ot_get_option('portfolio_grid_medium_column_count',3); ?>" sm-cols="<?php echo ot_get_option('portfolio_grid_small_column_count',2); ?>"
@@ -103,6 +105,22 @@
 
 			</div>
 			<!-- /portfolio wrapper -->	
+
+
+			<?php if( ot_get_option('portfolio_grid_show_filters') == 'on' && ot_get_option("portfolio_grid_show_sidebar")!= "on" && count($the_group_childs)>0 ): ?>
+			<div class="fixed-filter">
+				<a href="#" class="select-filter"><i class="fa fa-filter"></i> <?php echo ot_get_option('filter_title'); ?></a>
+				<ul class="grid-filters">
+				  	<li class="active"><a href="#" data-filter="*"><?php _e('All','toranj'); ?></a></li>
+				  	
+				  	<?php foreach ($the_group_childs as $group): ?>
+				  	<li><a href="#" data-filter=".<?php echo $group->slug; ?>"><?php echo $group->name; ?> - <?php echo $group->count ?></a></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+			<?php endif; ?>
+
+
 		</div>
 		<!-- /Main Contents -->
 

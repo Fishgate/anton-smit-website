@@ -39,6 +39,7 @@ if ( ! function_exists( 'owlab_add_styles_and_scripts' ) ) {
 		wp_register_script('tj-dropdown', OWLAB_SCRIPTS . '/vendors/jquery.dropdown.js', array('jquery'),THEME_VERSION, true);
 		wp_register_script('lazyload', OWLAB_SCRIPTS . '/vendors/jquery.lazyload.min.js', array('jquery'),THEME_VERSION, true);
 		
+		
 
 		// Load the custom scripts
 		wp_enqueue_script('jquery');
@@ -64,18 +65,19 @@ if ( ! function_exists( 'owlab_add_styles_and_scripts' ) ) {
 		
 
 		// Load the stylesheets
-		wp_register_style( 'bootstrap-style', OWLAB_CSS . '/vendors/bootstrap.css',THEME_VERSION);
-		wp_register_style( 'bootstrap-rtl-style', OWLAB_CSS . '/rtl/bootstrap-rtl.css',THEME_VERSION);
-		wp_register_style( 'font-faces', OWLAB_CSS . '/fonts/font-faces.css',THEME_VERSION);
-		wp_register_style( 'font-awesome', OWLAB_CSS . '/vendors/font-awesome.css',THEME_VERSION);
-		wp_register_style( 'magnific', OWLAB_CSS . '/vendors/magnific-popup.css',THEME_VERSION);
-		wp_register_style( 'media-element', OWLAB_CSS . '/vendors/mediaelementplayer.css',THEME_VERSION);
-		wp_register_style( 'rslider', OWLAB_CSS . '/vendors/responsiveslides.css',THEME_VERSION);
-		wp_register_style( 'classycompare', OWLAB_CSS . '/vendors/jquery.classycompare.css',THEME_VERSION);
-		wp_register_style( 'theme-style', OWLAB_CSS . '/style.css',THEME_VERSION);
-		wp_register_style( 'theme-shop', OWLAB_CSS . '/toranj-woocommerce.css',THEME_VERSION);
-		wp_register_style( 'theme-rtl-style', OWLAB_CSS . '/rtl/rtl.css',THEME_VERSION);
-		wp_register_style( 'theme-dark-sidebar', OWLAB_CSS . '/styles/dark-sidebar.css',THEME_VERSION);
+		wp_register_style( 'bootstrap-style', OWLAB_CSS . '/vendors/bootstrap.css',array(),THEME_VERSION);
+		wp_register_style( 'bootstrap-rtl-style', OWLAB_CSS . '/rtl/bootstrap-rtl.css',array(),THEME_VERSION);
+		wp_register_style( 'font-faces', OWLAB_CSS . '/fonts/font-faces.css',array(),THEME_VERSION);
+		wp_register_style( 'font-awesome', OWLAB_CSS . '/vendors/font-awesome.css',array(),THEME_VERSION);
+		wp_register_style( 'magnific', OWLAB_CSS . '/vendors/magnific-popup.css',array(),THEME_VERSION);
+		wp_register_style( 'media-element', OWLAB_CSS . '/vendors/mediaelementplayer.css',array(),THEME_VERSION);
+		wp_register_style( 'rslider', OWLAB_CSS . '/vendors/responsiveslides.css',array(),THEME_VERSION);
+		wp_register_style( 'classycompare', OWLAB_CSS . '/vendors/jquery.classycompare.css',array(),THEME_VERSION);
+		wp_register_style( 'theme-style', OWLAB_CSS . '/style.css',array(),THEME_VERSION);
+		wp_register_style( 'theme-shop', OWLAB_CSS . '/toranj-woocommerce.css',array(),THEME_VERSION);
+		wp_register_style( 'theme-rtl-style', OWLAB_CSS . '/rtl/rtl.css',array(),THEME_VERSION);
+		wp_register_style( 'theme-dark-sidebar', OWLAB_CSS . '/styles/dark-sidebar.css',array(),THEME_VERSION);
+
 
 
 
@@ -179,7 +181,17 @@ if ( ! function_exists('owwlab_wp_head_hook') ){
 						.blog-grid .post-header,
 						#post-header .header-content .post-title,
 						.contact-detail h5,
-						.owl-caption .title,.widget-title{font-family:$font;}
+						.widget-title,.cap-lg .cap-title,
+						.vertical-services .service-details .title,
+						.call-to-action .action-title,
+						.cap-elegant .cap-des,
+						.team-item .team-content .title,
+						.vertical-services .service-details .title,
+						.owl-slide .owl-caption .title,
+						.owl-slide .owl-caption .title, .owl-caption i,
+						.contact-detail h5,
+						.wpb_toggle
+						{font-family:$font;}
 				</style>";
 
 		}else{
@@ -226,7 +238,12 @@ if ( ! function_exists('owlab_custom_css') ){
 	  	$styles='';
 	   	if ( function_exists( 'ot_get_option' ) ){
 	   		$styles .= '
-	   			::selection,
+	   			::selection{
+					background-color:'.ot_get_option('color_accent').';
+	   			}
+	   			::-moz-selection{
+	   				background-color:'.ot_get_option('color_accent').';
+	   			}
 	   			.btn-toranj,
 	   			.back-to-top:hover,
 				.back-to-top:focus,
@@ -268,8 +285,10 @@ if ( ! function_exists('owlab_custom_css') ){
 				.cap-toranj .cap-title:after,
 				.tj-ms-skin .ms-slide .ms-slide-vpbtn:hover, .tj-ms-skin .ms-video-btn:hover,
 				.post-password-form input[type="submit"], .widget_search input[type="submit"],
-				#navigation li.current-menu-item a:before, #navigation li.current-menu-parent >a:before, #navigation .nav-prev>a:before
-
+				#navigation li.current-menu-item a:before, #navigation li.current-menu-parent >a:before, #navigation .nav-prev>a:before,
+				.dark-template .tj-password i,
+				#social-sharing-trigger,
+				#social-sharing .sharing-icon
 	   			{
 	   				background-color:'.ot_get_option('color_accent').';
 	   			}
@@ -278,7 +297,9 @@ if ( ! function_exists('owlab_custom_css') ){
 	   			.btn-toranj:active, 
 	   			.btn-toranj.active,
 	   			.woocommerce span.onsale, .woocommerce-page span.onsale,
-	   			.shop-post-title a::after
+	   			.shop-post-title a::after,
+	   			#social-sharing-trigger:hover, 
+	   			#social-sharing-trigger:focus
 	   			{
 	   				background-color:'.ot_get_option('color_accent_2').';
 	   			}
@@ -334,7 +355,8 @@ if ( ! function_exists('owlab_custom_css') ){
 				.blog-grid .sticky-span,
 				.tj-playbtn,
 				.tj-ms-skin .tj-ms-counter,
-				.tj-ms-skin .ms-slide .ms-slide-vpbtn:after, .tj-ms-skin .ms-video-btn:after
+				.tj-ms-skin .ms-slide .ms-slide-vpbtn:after, .tj-ms-skin .ms-video-btn:after,
+				#inner-bar
 				{
 	   				color:'.ot_get_option('color_accent').';
 	   			}
@@ -381,7 +403,41 @@ if ( ! function_exists('owlab_custom_css') ){
 	   			.btn-toranj.alt:hover{
 	   				color:#fff;
 	   			}
+
+	   			.regular-page{
+	   				background-color:'.ot_get_option('light_page_bcolor').';
+	   			}
+
+	   			#main-content.dark-template,
+	   			.regular-page-dark{
+	   				background-color:'.ot_get_option('dark_page_bcolor').';
+	   			}
+
+	   			.page-side{
+	   				background-color:'.ot_get_option('dark_sidebar_bcolor').';
+	   			}
+
+	   			.page-main,
+	   			#main-content .nicescroll-rails,
+	   			#ajax-folio-loader
+	   			{
+	   				background-color:'.ot_get_option('dark_main_bcolor').';
+	   			}
+
+	   			#side-bar{
+	   				background-color:'.ot_get_option('side_bar_bcolor').';
+	   			}
+	   			
+	   			#inner-bar{
+	   				background-color:'.ot_get_option('inner_bar_bcolor').';
+	   			}
+
+	   			'.ot_get_option('custom_css').'
+
+
+	   		}
 	   		';
+
 	   	}
 
 	    echo '<style type="text/css" id="toranj-custom-styles">'.preg_replace('/\s\s+/', " ", $styles).'</style>';

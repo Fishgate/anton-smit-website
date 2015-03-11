@@ -63,11 +63,11 @@ if ( ! function_exists( 'owlab_toranj_setup' ) ) {
 		/**
 		 * Add custom thumbnail sizes
 		 */
-		if ( function_exists( 'add_image_size' ) ) { 
-			add_image_size( 'blog-thumb', 800 ); //800 pixels wide (and unlimited height)
-			add_image_size( 'blog-gallery', 940, 500, true  );
-			add_image_size( 'blog-minimal', 100 , 100, true );
-		}
+		
+		add_image_size( 'blog-thumb', 800 ); //800 pixels wide (and unlimited height)
+		add_image_size( 'blog-gallery', 940, 500, true  );
+		add_image_size( 'blog-minimal', 100 , 100, true );
+		add_image_size( 'gallery-cropped', 900,600,true );
 
 		/**
 		 * Add support for woocommerce
@@ -271,3 +271,6 @@ function owlab_masterslider_starter_fields( $starters ){
     return $starters;
 }
 add_filter( 'masterslider_starter_fields', 'owlab_masterslider_starter_fields' );
+
+
+

@@ -351,26 +351,14 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 
             foreach ( $this->plugins as $plugin ) {
                 if ( ! is_plugin_active( $plugin['file_path'] ) ) {
-
-                    $args = apply_filters(
-                        'tgmpa_admin_menu_args',
-                        array(
-                            'parent_slug'=> 'themes.php',                          // Parent Menu slug.
-                            'page_title' => $this->strings['page_title'],          // Page title.
-                            'menu_title' => $this->strings['menu_title'],          // Menu title.
-                            'capability' => 'edit_theme_options',                  // Capability.
-                            'menu_slug'  => $this->menu,                           // Menu slug.
-                            'function'   => array( $this, 'install_plugins_page' ) // Callback.
-                        )
+                    add_theme_page(
+                        $this->strings['page_title'],          // Page title.
+                        $this->strings['menu_title'],          // Menu title.
+                        'edit_theme_options',                  // Capability.
+                        $this->menu,                           // Menu slug.
+                        array( $this, 'install_plugins_page' ) // Callback.
                     );
-
-                    if( apply_filters( 'tgmpa_admin_menu_use_add_theme_page', true ) ) {
-                        add_theme_page($args['page_title'], $args['menu_title'], $args['capability'], $args['menu_slug'], $args['function']);
-                    } else {
-                        add_submenu_page( $args['parent_slug'], $args['page_title'], $args['menu_title'], $args['capability'], $args['menu_slug'], $args['function']);
-                    }
-
-                    break;
+                break;
                 }
             }
 
@@ -415,7 +403,7 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
                 </form>
 
             </div>
-        <?php
+            <?php
 
         }
 
@@ -628,7 +616,7 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 
             foreach ( $this->plugins as $plugin ) {
                 // If the plugin is installed and active, check for minimum version argument before moving forward.
-                if ( is_plugin_active( $plugin['file_path'] ) || ( isset( $plugin['is_callable'] ) && is_callable( $plugin['is_callable'] ) ) ) {
+                if ( is_plugin_active( $plugin['file_path'] ) ) {
                     // A minimum version has been specified.
                     if ( isset( $plugin['version'] ) ) {
                         if ( isset( $installed_plugins[$plugin['file_path']]['Version'] ) ) {
@@ -760,7 +748,7 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 
                 $action_links = array_filter( $action_links ); // Remove any empty array items.
                 if ( $action_links ) {
-                    $rendered .= apply_filters( 'tgmpa_notice_rendered_action_links', '<p>' . implode( ' | ', $action_links ) . '</p>' );
+                    $rendered .= '<p>' . implode( ' | ', $action_links ) . '</p>';
                 }
 
                 // Register the nag messages and prepare them to be processed.
@@ -1145,7 +1133,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
             $installed_plugins = get_plugins();
 
             foreach ( TGM_Plugin_Activation::$instance->plugins as $plugin ) {
-                if ( is_plugin_active( $plugin['file_path'] ) || ( isset( $plugin['is_callable'] ) && is_callable( $plugin['is_callable'] ) ) ) {
+                if ( is_plugin_active( $plugin['file_path'] ) ) {
                     continue; // No need to display plugins if they are installed and activated.
                 }
 
@@ -1184,7 +1172,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
                     // The plugin must be from a private repository.
                     if ( preg_match( '|^http(s)?://|', $plugin['source'] ) ) {
                         $table_data[$i]['source'] = __( 'Private Repository', 'tgmpa' );
-                        // The plugin is pre-packaged with the theme.
+                    // The plugin is pre-packaged with the theme.
                     } else {
                         $table_data[$i]['source'] = __( 'Pre-Packaged', 'tgmpa' );
                     }
@@ -1204,8 +1192,6 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
                 $table_data[$i]['file_path'] = $plugin['file_path'];
                 $table_data[$i]['url']       = isset( $plugin['source'] ) ? $plugin['source'] : 'repo';
-
-                $table_data[$i] = apply_filters( 'tgmpa_table_data_item', $table_data[$i], $plugin );
 
                 $i++;
             }
@@ -1394,7 +1380,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
                 'status' => __( 'Status', 'tgmpa' )
             );
 
-            return apply_filters( 'tgmpa_table_columns', $columns );
+            return $columns;
 
         }
 
@@ -1595,12 +1581,12 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
                 // Wrap the install process with the appropriate HTML.
                 echo '<div class="tgmpa wrap">';
-                if ( version_compare( TGM_Plugin_Activation::$instance->wp_version, '3.8', '<' ) ) {
-                    screen_icon( apply_filters( 'tgmpa_default_screen_icon', 'themes' ) );
-                }
-                echo '<h2>' . esc_html( get_admin_page_title() ) . '</h2>';
-                // Process the bulk installation submissions.
-                $installer->bulk_install( $sources );
+                    if ( version_compare( TGM_Plugin_Activation::$instance->wp_version, '3.8', '<' ) ) {
+                        screen_icon( apply_filters( 'tgmpa_default_screen_icon', 'themes' ) );
+                    }
+                    echo '<h2>' . esc_html( get_admin_page_title() ) . '</h2>';
+                    // Process the bulk installation submissions.
+                    $installer->bulk_install( $sources );
                 echo '</div>';
 
                 return true;

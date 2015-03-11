@@ -1,7 +1,7 @@
 /*!
  *  Video background plugin by owwwlab
- *  Version   : 0.9
- *  Date      : 2014-06-05
+ *  Version   : 1.0.1
+ *  Date      : 2015-01-28
  *  Licence   : All rights reserved 
  *  Author    : owwwlab (Ehsan Dalvand & Alireza Jahandideh)
  *  Contact   : owwwlab@gmail.com
@@ -53,6 +53,10 @@ if ( typeof Object.create !== 'function'  ){ // browser dose not support Object.
         vs.playonHover =self.$elem.hasClass('hoverPlay') || vs.playonHover;
 
         var headOption='';
+
+        if (self.$elem.hasClass('unmuted')){
+          vs.muted=false;
+        }
 
         if (vs.autoplay & !vs.playonHover){
           headOption+=' autoplay';
@@ -247,11 +251,16 @@ if ( typeof Object.create !== 'function'  ){ // browser dose not support Object.
           return false;
         }
 
-        self.$elem.css({
-          'background-image' :'url('+vs.posterPath+')',
-          'background-size' :'cover',
-          'background-position': '50% 0'
-        })
+        if (self.$elem.parent().height()>0){
+          self.$elem.css({
+            'background-image' :'url('+vs.posterPath+')',
+            'background-size' :'cover',
+            'background-position': '50% 0'
+          })
+        }else{
+             $('<img>').attr('src',vs.posterPath).css('width','100%').appendTo(self.$elem);
+        }
+
       },
       bindUIActions: function(){/**/
         var self = this;

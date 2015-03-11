@@ -14,7 +14,7 @@
 	<div class="page-wrapper">
 		
 		<!-- Sidebar -->
-		<div class="page-side ajax-element">
+		<div class="page-side">
 			<div class="inner-wrapper vcenter-wrapper">
 				<div class="side-content vcenter">
 					<h1 class="title">

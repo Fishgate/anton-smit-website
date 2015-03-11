@@ -35,11 +35,17 @@
 			<div class="inner-wrapper">	
 				<div id="side-inner">
 
+					
 					<!-- Logo -->	
 					<div id="logo-wrapper">
-						<a href="<?php echo get_site_url(); ?>"><img src="<?php echo ot_get_option('site_logo') ?>" alt="logo"></a>
+					<?php if (ot_get_option('site_logo') != ''): ?>
+						<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><img src="<?php echo ot_get_option('site_logo') ?>" alt="logo"></a>
+					<?php else: ?>
+						<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><img src="<?php echo generate_blank_image(150,70); ?>" alt="logo"></a>
+					<?php endif; ?>
 					</div>
-					<!-- /Logo -->	
+					<!-- /Logo -->
+					
 
 					<div id="side-contents">
 
@@ -72,7 +78,12 @@
 								$socials = ot_get_option('social_icons');
 								if (isset($socials[0])){
 									foreach (ot_get_option('social_icons') as $social) {
-										echo '<li><a href="'.$social['si_url'].'" target="_blank"><i class="fa fa-'.$social['si_icon'].'"></i></a></li>';
+										if ($social['si_icon']=='500px'){
+											owlab_include_500px_css();
+											echo '<li><a href="'.$social['si_url'].'" target="_blank"><i class="icon-'.$social['si_icon'].'"></i></a></li>';
+										}else{
+											echo '<li><a href="'.$social['si_url'].'" target="_blank"><i class="fa fa-'.$social['si_icon'].'"></i></a></li>';
+										}
 									}
 								}
 							?>

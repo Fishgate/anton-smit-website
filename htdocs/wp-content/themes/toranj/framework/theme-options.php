@@ -1,5 +1,11 @@
 <?php
 
+add_action( 'ot_after_theme_options_save','owlab_update_permalinks' );
+function owlab_update_permalinks(){
+  flush_rewrite_rules();
+}
+
+
 global $google_fonts;
 
 $google_fonts = array(
@@ -260,6 +266,7 @@ $google_fonts = array(
   array('label' => 'Ribeye','value' => 'Ribeye'),
   array('label' => 'Righteous','value' => 'Righteous'),
   array('label' => 'Rochester','value' => 'Rochester'),
+  array('label' => 'Roboto','value' => 'Roboto'),
   array('label' => 'Rock Salt','value' => 'Rock+Salt'),
   array('label' => 'Rokkitt','value' => 'Rokkitt'),
   array('label' => 'Rosario','value' => 'Rosario'),
@@ -296,6 +303,7 @@ $google_fonts = array(
   array('label' => 'Terminal Dosis','value' => 'Terminal+Dosis'),
   array('label' => 'The Girl Next Door','value' => 'The+Girl+Next+Door'),
   array('label' => 'Tienne','value' => 'Tienne'),
+  array('label' => 'Titillium Web','value' => 'Titillium+Web'),
   array('label' => 'Tinos','value' => 'Tinos'),
   array('label' => 'Tulpen One','value' => 'Tulpen+One'),
   array('label' => 'Ubuntu Condensed','value' => 'Ubuntu+Condensed'),
@@ -374,22 +382,16 @@ function custom_theme_options() {
         'title'       => __('Blog Settings','toranj')
       ),
       array(
-        'id'          => 'portfolio_single',
-        'title'       => __('Portfolio Single page','toranj')
+        'id'          => 'portfolio',
+        'title'       => __('Portfolio','toranj')
       ),
-      array(
-        'id'          => 'portfolio_list_page',
-        'title'       => __('Portfolio list page','toranj')
-      ),
-      array(
-        'id'          => 'portfolio_grid',
-        'title'       => __('Portfolio Grid','toranj')
-      ),
-     
-      
       array(
         'id'          => 'gallery',
         'title'       => __('Gallery','toranj')
+      ),
+      array(
+        'id'          => 'bulk_gallery',
+        'title'       => __('Bulk Gallery','toranj')
       ),
       array(
         'id'          => 'woocommerce',
@@ -398,10 +400,281 @@ function custom_theme_options() {
       array(
         'id'          => 'sidebars',
         'title'       => __('Sidebars','toranj')
+      ),
+      array(
+        'id'          => 'slugs',
+        'title'       => __('Post type Slugs','toranj')
+      ),
+      array(
+        'id'          => 'social_sharing',
+        'title'       => __('Social Sharing','toranj')
+      ),
+      array(
+        'id'          => 'custom-css',
+        'title'       => __('Custom CSS','toranj')
       )
     ),
     'settings'        => array(
+        
+      array(
+        'id'          => 'custom_css',
+        'label'       => __( 'CSS', 'option-tree-theme' ),
+        'desc'        => '<p>' . __('Here you can add custom css to your website. This will override the theme options. We recommend using the child-theme to do advanced customizations.','toranj') . '</p>',
+        'std'         => '
+/*---sample style to change the color of menu icon --*/
 
+/*
+#menu-toggle,
+#menu-toggle:after,
+#menu-toggle:before{
+    background-color:#fff;
+}
+*/
+        ',
+        'type'        => 'css',
+        'section'     => 'custom-css',
+        'rows'        => '20',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+
+      /**
+       * ----------------------------------------------------------------------------------------
+       * social_sharing
+       * ----------------------------------------------------------------------------------------
+       */
+      array(
+        'id'          => 'metaboxes_text',
+        'label'       => __('About Social Sharing','toranj'),
+        'desc'        => __('You can enable sharing bottom on you website globally here, it will add a button on galleries to share your content.','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'social_sharing',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'enable_social_sharing',
+        'label'       => __('Enable Social Sharing?','toranj'),
+        'std'         => 'off',
+        'type'        => 'on-off',
+        'section'     => 'social_sharing',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'sharing_social_medias',
+        'label'       => __('Sharing social media list','toranj'),
+        'desc'        => '',
+        'std'         => '',
+        'type'        => 'list-item',
+        'section'     => 'social_sharing',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'enable_social_sharing:is(on)',
+        'operator'    => 'and',
+        'settings'    => array( 
+          array(
+            'id'          => 'sharing_websites',
+            'label'       => __('Select social sharing media','toranj'),
+            'desc'        => '',
+            'std'         => '',
+            'type'        => 'select',
+            'rows'        => '',
+            'post_type'   => '',
+            'taxonomy'    => '',
+            'min_max_step'=> '',
+            'class'       => '',
+            'condition'   => '',
+            'operator'    => 'and',
+            'choices'     => array( 
+              array(
+                'value'       => 'facebook',
+                'label'       => __('facebook','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'twitter',
+                'label'       => __('twitter','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'google-plus',
+                'label'       => __('google plus','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'digg',
+                'label'       => __('Digg','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'linkedin',
+                'label'       => __('linkedin','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'pinterest',
+                'label'       => __('pinterest','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'buffer',
+                'label'       => __('Buffer','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'tumblr',
+                'label'       => __('Tumblr','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'reddit',
+                'label'       => __('Reddit','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'stumbleUpon',
+                'label'       => __('StumbleUpon','toranj'),
+                'src'         => ''
+              ),
+              array(
+                'value'       => 'delicious',
+                'label'       => __('delicious','toranj'),
+                'src'         => ''
+              )
+            )
+          )
+        )
+      ),
+      /**
+       * ----------------------------------------------------------------------------------------
+       * slugs
+       * ----------------------------------------------------------------------------------------
+       */
+      array(
+        'id'          => 'metaboxes_text',
+        'label'       => __('About Slugs','toranj'),
+        'desc'        => __('Here you can set the slug of the custom post types of the theme.<br>If you do not know what this means leave them as they are.','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'portfolio_slug',
+        'label'       => __('Portfolio slug','toranj'),
+        'desc'        => __('Default value is <code>portfolio</code>, user lowercase url friendly characters and <strong>no space</strong>.','toranj'),
+        'std'         => 'portfolio',
+        'type'        => 'text',
+        'section'     => 'slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'portfolio_group_slug',
+        'label'       => __('Portfolio Groups slug','toranj'),
+        'desc'        => __('Default value is <code>portfoliogroup</code>, user lowercase url friendly characters and <strong>no space</strong>.','toranj'),
+        'std'         => 'portfoliogroup',
+        'type'        => 'text',
+        'section'     => 'slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'gallery_slug',
+        'label'       => __('Gallery slug','toranj'),
+        'desc'        => __('Default value is <code>gallery</code>, user lowercase url friendly characters and <strong>no space</strong>.','toranj'),
+        'std'         => 'gallery',
+        'type'        => 'text',
+        'section'     => 'slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'gallery_tax_slug',
+        'label'       => __('Gallery Album slug','toranj'),
+        'desc'        => __('Default value is <code>album</code>, user lowercase url friendly characters and <strong>no space</strong>.','toranj'),
+        'std'         => 'album',
+        'type'        => 'text',
+        'section'     => 'slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_slug',
+        'label'       => __('Bulk Gallery slug','toranj'),
+        'desc'        => __('Default value is <code>bulk-gallery</code>, user lowercase url friendly characters and <strong>no space</strong>.','toranj'),
+        'std'         => 'bulk-gallery',
+        'type'        => 'text',
+        'section'     => 'slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_category_slug',
+        'label'       => __('Bulk Gallery category slug','toranj'),
+        'desc'        => __('Default value is <code>gallery-category</code>, user lowercase url friendly characters and <strong>no space</strong>.','toranj'),
+        'std'         => 'gallery-category',
+        'type'        => 'text',
+        'section'     => 'slugs',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
       /**
        * ----------------------------------------------------------------------------------------
        * General
@@ -497,6 +770,37 @@ function custom_theme_options() {
         'condition'   => '',
         'operator'    => 'and'
       ),
+      array(
+        'id'          => 'show_breadcrumbs',
+        'label'       => __('Show Breadcrumbs?','toranj'),
+        'desc'        => __('Select whether or not you want to breadcrumbs at pages', 'toranj'),
+        'std'         => 'on',
+        'type'        => 'on-off',
+        'section'     => 'general',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'enable_lazyloud',
+        'label'       => __('Enable lazyload on grid images?','toranj'),
+        'std'         => 'on',
+        'type'        => 'on-off',
+        'section'     => 'general',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      
+
       /**
        * ----------------------------------------------------------------------------------------
        * contact
@@ -713,6 +1017,11 @@ function custom_theme_options() {
                 'value'       => 'vimeo-square',
                 'label'       => __('Vimeo','toranj'),
                 'src'         => ''
+              ),
+              array(
+                'value'       => '500px',
+                'label'       => __('500px','toranj'),
+                'src'         => ''
               )
             )
           ),
@@ -738,20 +1047,8 @@ function custom_theme_options() {
        * appearance
        * ----------------------------------------------------------------------------------------
        */
-      // array(
-      //   'id'          => 'enable_lazyloud',
-      //   'label'       => __('Enable lazyload on images?','toranj'),
-      //   'std'         => 'on',
-      //   'type'        => 'on-off',
-      //   'section'     => 'appearance',
-      //   'rows'        => '',
-      //   'post_type'   => '',
-      //   'taxonomy'    => '',
-      //   'min_max_step'=> '',
-      //   'class'       => '',
-      //   'condition'   => '',
-      //   'operator'    => 'and'
-      // ),
+      
+      
       array(
         'id'          => 'fixed_sidebar',
         'label'       => __('Fixed sidebar','toranj'),
@@ -812,6 +1109,92 @@ function custom_theme_options() {
         'operator'    => 'and'
       ),
       array(
+        'id'          => 'light_page_bcolor',
+        'label'       => __('Light pages background color','toranj'),
+        'std'         => '#fdfdfd',
+        'type'        => 'colorpicker',
+        'section'     => 'appearance',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'dark_page_bcolor',
+        'label'       => __('Dark pages background color','toranj'),
+        'std'         => '#232323',
+        'type'        => 'colorpicker',
+        'section'     => 'appearance',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'side_bar_bcolor',
+        'label'       => __('Main sidebar background color','toranj'),
+        'std'         => '#fafaf5',
+        'type'        => 'colorpicker',
+        'section'     => 'appearance',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'inner_bar_bcolor',
+        'label'       => __('Closed menu-bar background color','toranj'),
+        'std'         => '#fafaf5',
+        'type'        => 'colorpicker',
+        'section'     => 'appearance',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+       array(
+        'id'          => 'dark_sidebar_bcolor',
+        'label'       => __('Background color of dark sidebar in gallery and portfolio pages ','toranj'),
+        'desc'        =>__('The background color of dark sidebar in gallery and portfolio pages '),
+        'std'         => '#232323',
+        'type'        => 'colorpicker',
+        'section'     => 'appearance',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+         array(
+        'id'          => 'dark_main_bcolor',
+        'label'       => __('Background color of main area in gallery and portfolio pages','toranj'),
+        'desc'        =>__('The background color of main content area in gallery and portfolio pages '),
+        'std'         => '#232323',
+        'type'        => 'colorpicker',
+        'section'     => 'appearance',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
         'label'       => __('Body font','toranj'),
         'id'          => 'toranj_body_font',
         'desc'        => __('Choose font for body ( Default is Raleway).','toranj'),
@@ -824,6 +1207,7 @@ function custom_theme_options() {
         'class'       => '',
         'choices'     => $google_fonts
         ),
+
       array(
         'label'       => 'Body font size',
         'id'          => __('toranj_body_font_size','toranj'),
@@ -836,7 +1220,7 @@ function custom_theme_options() {
         'class'       => '',
         'section'     => 'appearance'
         ),
-      
+
       /**
        * ----------------------------------------------------------------------------------------
        * blog
@@ -1189,16 +1573,46 @@ function custom_theme_options() {
 
       /**
        * ----------------------------------------------------------------------------------------
-       * portfolio single
+       * portfolio
        * ----------------------------------------------------------------------------------------
        */
+      array(
+        'id'          => 'owlabUseAjax',
+        'label'       => __('Enable Ajax for portfolio pages?','toranj'),
+        'std'         => 'on',
+        'type'        => 'on-off',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'metaboxes_text4',
+        'label'       => __('About Slugs','toranj'),
+        'desc'        => __('<h1>Following settings work on portfolio single pages</h1><hr>','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
       array(
         'id'          => 'metaboxes_text',
         'label'       => __('About sidebars','toranj'),
         'desc'        => __('Create additional fields for your portfolio items.', 'toranj'),
         'std'         => '',
         'type'        => 'textblock',
-        'section'     => 'portfolio_single',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1212,7 +1626,7 @@ function custom_theme_options() {
         'id'          => 'incr_portfolio_fields',
         'type'        => 'list-item',
         'desc'        => __('Choose a unique title for each filed', 'toranj'),
-        'section'     => 'portfolio_single',
+        'section'     => 'portfolio',
         'settings'    => array(
           array(
             'label'       => __('ID','toranj'),
@@ -1233,7 +1647,7 @@ function custom_theme_options() {
         'desc'        => '',
         'std'         => 'on',
         'type'        => 'on-off',
-        'section'     => 'portfolio_single',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1249,7 +1663,7 @@ function custom_theme_options() {
         'desc'        => '',
         'std'         => 'on',
         'type'        => 'on-off',
-        'section'     => 'portfolio_single',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1264,7 +1678,7 @@ function custom_theme_options() {
         'desc'        => '',
         'std'         => 'on',
         'type'        => 'on-off',
-        'section'     => 'portfolio_single',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1273,17 +1687,14 @@ function custom_theme_options() {
         'condition'   => '',
         'operator'    => 'and'
       ),
-      /**
-       * ----------------------------------------------------------------------------------------
-       * portfolio_list_page
-       * ----------------------------------------------------------------------------------------
-       */
+
       array(
-        'id'          => 'owlabUseAjax',
-        'label'       => __('Enable Ajax for portfolio pages?','toranj'),
-        'std'         => 'on',
-        'type'        => 'on-off',
-        'section'     => 'portfolio_list_page',
+        'id'          => 'metaboxes_text2',
+        'label'       => __('About Slugs','toranj'),
+        'desc'        => __('<h1>Following settings work on portfolio Archive page</h1><hr>','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1292,13 +1703,15 @@ function custom_theme_options() {
         'condition'   => '',
         'operator'    => 'and'
       ),
+
+      
       array(
         'id'          => 'portfolio_index_layout',
-        'label'       => __('Layout type','toranj'),
+        'label'       => __('Portfolio Archive layout','toranj'),
         'desc'        => __('Settings for:','toranj').'<a target="_blank" href="'.get_site_url().'/portfolio">'.get_site_url().'/portfolio</a>',
         'std'         => 'horizontal',
         'type'        => 'select',
-        'section'     => 'portfolio_list_page',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1330,7 +1743,7 @@ function custom_theme_options() {
         'desc'        => '',
         'std'         => 'on',
         'type'        => 'on-off',
-        'section'     => 'portfolio_list_page',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1341,11 +1754,11 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_title_1',
-        'label'       => __('Title ( Part one )','toranj'),
+        'label'       => __('Archive page title line 1','toranj'),
         'desc'        => __('first part of the title, leave blank in case you don\'t want it', 'toranj'),
         'std'         => 'Browse our',
         'type'        => 'text',
-        'section'     => 'portfolio_list_page',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1356,11 +1769,11 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_title_2',
-        'label'       => __('Title ( Part Two )','toranj'),
+        'label'       => __('Archive page title line 2','toranj'),
         'desc'        => __('Second and bolder part of the title', 'toranj'),
         'std'         => 'Portfolio',
         'type'        => 'text',
-        'section'     => 'portfolio_list_page',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1371,62 +1784,11 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_side_content',
-        'label'       => __('Side content','toranj'),
+        'label'       => __('Archive page Side content','toranj'),
         'desc'        => __('This content will be displayed under the title at sidebar<br /> <strong>Note:</strong> keep it short','toranj'),
         'std'         => '',
         'type'        => 'textarea',
-        'section'     => 'portfolio_list_page',
-        'rows'        => '',
-        'post_type'   => '',
-        'taxonomy'    => '',
-        'min_max_step'=> '',
-        'class'       => '',
-        'condition'   => '',
-        'operator'    => 'and'
-      ),
-
-
-      /**
-       * ----------------------------------------------------------------------------------------
-       * portfolio_grid
-       * ----------------------------------------------------------------------------------------
-       */
-      array(
-        'id'          => 'portfolio_grid_show_filters',
-        'label'       => __('Show filters for Grid layout','toranj'),
-        'desc'        => __('Do you want to show filters ( filter by group ) for Grid layout? <br> Note: We don\'t recommend to use both filters and side-content at the same time, use both on your own risk.','toranj'),
-        'std'         => 'on',
-        'type'        => 'on-off',
-        'section'     => 'portfolio_grid',
-        'rows'        => '',
-        'post_type'   => '',
-        'taxonomy'    => '',
-        'min_max_step'=> '',
-        'class'       => '',
-        'condition'   => '',
-        'operator'    => 'and'
-      ),
-      array(
-        'id'          => 'filter_title',
-        'label'       => __('Filter title','toranj'),
-        'desc'        => '',
-        'std'         => 'Groups',
-        'type'        => 'text',
-        'section'     => 'portfolio_grid',
-        'rows'        => '',
-        'post_type'   => '',
-        'taxonomy'    => '',
-        'min_max_step'=> '',
-        'class'       => '',
-        'condition'   => '',
-        'operator'    => 'and'
-      ),
-      array(
-        'id'          => 'portfolio_grid_show_sidebar',
-        'label'       => __('Show sidebar?','toranj'),
-        'std'         => 'on',
-        'type'        => 'on-off',
-        'section'     => 'portfolio_grid',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1437,11 +1799,82 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_grid_same_ratio',
-        'label'       => __('Same Ratio Thumbs','toranj'),
+        'label'       => __('Same Ratio Thumbs for Archive page grid?','toranj'),
         'desc'        => __('If all your thumbnails are at the same ratio turn this on, for example if you want all your thumbs to be at the same size, or even if you have two different same ratio images. If you want to use images with variable heightes leave this to be off.', 'toranj'),
         'std'         => 'off',
         'type'        => 'on-off',
-        'section'     => 'portfolio_grid',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+      array(
+        'id'          => 'metaboxes_text10',
+        'label'       => __('About Slugs','toranj'),
+        'desc'        => __('<h1>Following settings work on portfolio group pages</h1><hr>','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+      array(
+        'id'          => 'portfolio_group_upper_title',
+        'label'       => __('Group page upper title ','toranj'),
+        'desc'        => __('the title will be the name of the group', 'toranj'),
+        'std'         => __('Browse Group','toranj'),
+        'type'        => 'text',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+
+
+
+
+
+
+
+      array(
+        'id'          => 'metaboxes_text1',
+        'label'       => __('About Slugs','toranj'),
+        'desc'        => __('<h1>Following settings work on portfolio Archive page and group pages</h1><hr>','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+      array(
+        'id'          => 'portfolio_grid_show_filters',
+        'label'       => __('Show filters for Grid layout','toranj'),
+        'desc'        => __('Do you want to show filters ( filter by group ) for Grid layout? <br> Note: We don\'t recommend to use both filters and side-content at the same time, use both on your own risk.','toranj'),
+        'std'         => 'on',
+        'type'        => 'on-off',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1451,12 +1884,42 @@ function custom_theme_options() {
         'operator'    => 'and'
       ),
       array(
+        'id'          => 'filter_title',
+        'label'       => __('Grid - Filter title','toranj'),
+        'desc'        => '',
+        'std'         => 'Groups',
+        'type'        => 'text',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'portfolio_grid_show_sidebar',
+        'label'       => __('Grid - Show sidebar?','toranj'),
+        'std'         => 'on',
+        'type'        => 'on-off',
+        'section'     => 'portfolio',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      
+      array(
         'id'          => 'portfolio_grid_hover',
-        'label'       => __('Portfolio Grid Hover style','toranj'),
+        'label'       => __('Grid Hover style','toranj'),
         'desc'        => '',
         'std'         => '',
         'type'        => 'select',
-        'section'     => 'portfolio_grid',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1479,11 +1942,11 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_grid_nopadding',
-        'label'       => __('Remove spaces between images ( no padding )','toranj'),
+        'label'       => __('Grid - Remove spaces between images ( no padding )','toranj'),
         'desc'        => '',
         'std'         => 'off',
         'type'        => 'on-off',
-        'section'     => 'portfolio_grid',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1494,11 +1957,11 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_grid_larg_screen_column_count',
-        'label'       => __('Portfolio Grid Larg Screen column count','toranj'),
+        'label'       => __('Grid - Large Screen column count','toranj'),
         'desc'        => __('Number of grid columns at large screens', 'toranj'),
         'std'         => '5',
         'type'        => 'numeric-slider',
-        'section'     => 'portfolio_grid',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1509,11 +1972,11 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_grid_medium_column_count',
-        'label'       => __('Portfolio Grid Medium Column Count','toranj'),
+        'label'       => __('Grid - Medium Column Count','toranj'),
         'desc'        => __('For medium devices', 'toranj'),
         'std'         => '3',
         'type'        => 'numeric-slider',
-        'section'     => 'portfolio_grid',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1524,11 +1987,11 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'portfolio_grid_small_column_count',
-        'label'       => __('Portfolio Grid Small Column Count','toranj'),
+        'label'       => __('Grid - Small Column Count','toranj'),
         'desc'        => __('For small display devices', 'toranj'),
         'std'         => '1',
         'type'        => 'numeric-slider',
-        'section'     => 'portfolio_grid',
+        'section'     => 'portfolio',
         'rows'        => '',
         'post_type'   => '',
         'taxonomy'    => '',
@@ -1545,7 +2008,7 @@ function custom_theme_options() {
        */
       array(
         'id'          => 'gallery_index_layout',
-        'label'       => __('Gallery Index Layout','toranj'),
+        'label'       => __('Archive layout','toranj'),
         'desc'        => __('choose how you want to show the index page of the gallery ( the page that will list all your images )', 'toranj'),
         'std'         => 'grid',
         'type'        => 'radio',
@@ -1582,7 +2045,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_title_1',
-        'label'       => __('Gallery title line1','toranj'),
+        'label'       => __('Archive page title line 1','toranj'),
         'desc'        => '',
         'std'         => '',
         'type'        => 'text',
@@ -1597,7 +2060,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_title_2',
-        'label'       => __('Gallery title line2','toranj'),
+        'label'       => __('Archive page title line 2','toranj'),
         'desc'        => '',
         'std'         => '',
         'type'        => 'text',
@@ -1612,7 +2075,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_side_content',
-        'label'       => __('Gallery side content','toranj'),
+        'label'       => __('Archive page side content','toranj'),
         'desc'        => '',
         'std'         => '',
         'type'        => 'textarea',
@@ -1626,8 +2089,41 @@ function custom_theme_options() {
         'operator'    => 'and'
       ),
       array(
+        'id'          => 'gallery_grid___same_ratio_thumbs',
+        'label'       => __('Archive Page Same Ratio Thumbs on Grid?','toranj'),
+        'desc'        => __('If all your thumbnails are at the same ratio turn this on, for example if you want all your thumbs to be at the same size, or even if you have two different same ratio images. If you want to use images with variable heightes leave this to be off.', 'toranj'),
+        'std'         => '',
+        'type'        => 'on-off',
+        'section'     => 'gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'metaboxes_text',
+        'label'       => __('About Slugs','toranj'),
+        'desc'        => __('<h1>Following settings work both on album pages and archive page</h1><hr>','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+
+
+      array(
         'id'          => 'gallery_index_overlay_type',
-        'label'       => __('Gallery index - Image Hover type','toranj'),
+        'label'       => __('Image Hover type','toranj'),
         'desc'        => '',
         'std'         => '',
         'type'        => 'select',
@@ -1669,7 +2165,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_grid___layout_type',
-        'label'       => __('Gallery Grid - Layout Type','toranj'),
+        'label'       => __('Grid - Layout Type','toranj'),
         'desc'        => __('choose between Layouts', 'toranj'),
         'std'         => '',
         'type'        => 'select',
@@ -1696,7 +2192,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_grid_show_filters',
-        'label'       => __('Gallery Grid - Show filters?','toranj'),
+        'label'       => __('Grid - Show filters?','toranj'),
         'desc'        => __('Do you want to show filters ( filter by group ) for Grid layout?  Note: We don\'t recommend to use both filters and side-content at the same time, use both on your own risk.','toranj'),
         'std'         => 'on',
         'type'        => 'on-off',
@@ -1711,7 +2207,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_grid___filter_title',
-        'label'       => __('Gallery Grid - Filter title','toranj'),
+        'label'       => __('Grid - Filter title','toranj'),
         'desc'        => '',
         'std'         => 'Filter',
         'type'        => 'text',
@@ -1724,24 +2220,10 @@ function custom_theme_options() {
         'condition'   => 'gallery_index_layout:is(grid)',
         'operator'    => 'and'
       ),
-      array(
-        'id'          => 'gallery_grid___same_ratio_thumbs',
-        'label'       => __('Gallery Grid - Same Ratio Thumbs?','toranj'),
-        'desc'        => __('If all your thumbnails are at the same ratio turn this on, for example if you want all your thumbs to be at the same size, or even if you have two different same ratio images. If you want to use images with variable heightes leave this to be off.', 'toranj'),
-        'std'         => '',
-        'type'        => 'on-off',
-        'section'     => 'gallery',
-        'rows'        => '',
-        'post_type'   => '',
-        'taxonomy'    => '',
-        'min_max_step'=> '',
-        'class'       => '',
-        'condition'   => 'gallery_index_layout:is(grid)',
-        'operator'    => 'and'
-      ),
+      
       array(
         'id'          => 'gallery_grid___remove_spaces_between_images',
-        'label'       => __('Gallery Grid - Remove spaces between images?','toranj'),
+        'label'       => __('Grid - Remove spaces between images?','toranj'),
         'desc'        => '',
         'std'         => 'off',
         'type'        => 'on-off',
@@ -1756,7 +2238,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_grid___larg_screen_column_count',
-        'label'       => __('Gallery Grid - Larg Screen column count','toranj'),
+        'label'       => __('Grid - Large Screen column count','toranj'),
         'desc'        => __('Number of grid columns at large screens', 'toranj'),
         'std'         => '4',
         'type'        => 'numeric-slider',
@@ -1771,7 +2253,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_grid___medium_screen_column_count',
-        'label'       => __('Gallery Grid - Medium Screen Column Count','toranj'),
+        'label'       => __('Grid - Medium Screen Column Count','toranj'),
         'desc'        => __('For medium devices', 'toranj'),
         'std'         => '3',
         'type'        => 'numeric-slider',
@@ -1786,7 +2268,7 @@ function custom_theme_options() {
       ),
       array(
         'id'          => 'gallery_grid___small_column_count',
-        'label'       => __('Gallery Grid - Small Column Count','toranj'),
+        'label'       => __('Grid - Small Column Count','toranj'),
         'desc'        => __('For small display devices', 'toranj'),
         'std'         => '1',
         'type'        => 'numeric-slider',
@@ -1799,7 +2281,309 @@ function custom_theme_options() {
         'condition'   => 'gallery_index_layout:is(grid)',
         'operator'    => 'and'
       ),
+      array(
+        'id'          => 'gallery_grid___xs_column_count',
+        'label'       => __('Grid - mobile devices Column Count','toranj'),
+        'desc'        => __('For mobile display devices', 'toranj'),
+        'std'         => '1',
+        'type'        => 'numeric-slider',
+        'section'     => 'gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '1,3',
+        'class'       => '',
+        'condition'   => 'gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
 
+      /**
+       * ----------------------------------------------------------------------------------------
+       * Bulk gallery
+       * ----------------------------------------------------------------------------------------
+       */
+      array(
+        'id'          => 'bulk_gallery_index_layout',
+        'label'       => __('Bulk Gallery Archive Layout','toranj'),
+        'desc'        => __('choose how you want to show the index page of the bulk gallery ( the page that will list all your bulk galleries )', 'toranj'),
+        'std'         => 'horizontal-scroll',
+        'type'        => 'radio',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and',
+        'choices'     => array( 
+          
+          array(
+            'value'       => 'horizontal-scroll',
+            'label'       => __('horizontal scrolling','toranj'),
+            'src'         => ''
+          ),
+          array(
+            'value'       => 'grid',
+            'label'       => __('grid','toranj'),
+            'src'         => ''
+          )
+        )
+      ),
+      array(
+        'id'          => 'bulk_gallery_title_1',
+        'label'       => __('Archive page title line1','toranj'),
+        'desc'        => '',
+        'std'         => 'Browse our',
+        'type'        => 'text',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_title_2',
+        'label'       => __('Archive page title line2','toranj'),
+        'desc'        => '',
+        'std'         => 'Gallery',
+        'type'        => 'text',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_side_content',
+        'label'       => __('Archive page side content','toranj'),
+        'desc'        => '',
+        'std'         => '',
+        'type'        => 'textarea',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+      array(
+        'id'          => 'bulk_gallery_cat_title',
+        'label'       => __('Category page upper title','toranj'),
+        'desc'        => '',
+        'std'         => __('Browse Category','toranj'),
+        'type'        => 'text',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+      array(
+        'id'          => 'metaboxes_text',
+        'label'       => __('About Slugs','toranj'),
+        'desc'        => __('<h1>Following settings work both on Categories pages and archive page</h1><hr>','toranj'),
+        'std'         => '',
+        'type'        => 'textblock',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => '',
+        'operator'    => 'and'
+      ),
+
+
+
+      array(
+        'id'          => 'bulk_gallery_grid___layout_type',
+        'label'       => __('Grid - Layout Type','toranj'),
+        'desc'        => __('choose between Layouts', 'toranj'),
+        'std'         => '',
+        'type'        => 'select',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and',
+        'choices'     => array( 
+          array(
+            'value'       => 'with-sidebar',
+            'label'       => __('With sidebar','toranj'),
+            'src'         => ''
+          ),
+          array(
+            'value'       => 'full',
+            'label'       => __('Full - No sidebar','toranj'),
+            'src'         => ''
+          )
+        )
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid_show_filters',
+        'label'       => __('Grid - Show filters?','toranj'),
+        'desc'        => __('Do you want to show filters ( filter by group ) for Grid layout?  Note: We don\'t recommend to use both filters and side-content at the same time, use both on your own risk.','toranj'),
+        'std'         => 'off',
+        'type'        => 'on-off',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid___filter_title',
+        'label'       => __('Grid - Filter title','toranj'),
+        'desc'        => '',
+        'std'         => 'Filter',
+        'type'        => 'text',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid_hover',
+        'label'       => __('Grid Hover style','toranj'),
+        'desc'        => '',
+        'std'         => '',
+        'type'        => 'select',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and',
+        'choices'     => array( 
+          array(
+            'value'       => 'tj-hover-1',
+            'label'       => __('Style #1','toranj'),
+            'src'         => ''
+          ),
+          array(
+            'value'       => 'tj-hover-2',
+            'label'       => __('style #2','toranj'),
+            'src'         => ''
+          )
+        )
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid___same_ratio_thumbs',
+        'label'       => __('Grid - Same Ratio Thumbs?','toranj'),
+        'desc'        => __('If all your thumbnails are at the same ratio turn this on, for example if you want all your thumbs to be at the same size, or even if you have two different same ratio images. If you want to use images with variable heightes leave this to be off.', 'toranj'),
+        'std'         => 'off',
+        'type'        => 'on-off',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid___remove_spaces_between_images',
+        'label'       => __('Grid - Remove spaces between images?','toranj'),
+        'desc'        => '',
+        'std'         => 'off',
+        'type'        => 'on-off',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid___larg_screen_column_count',
+        'label'       => __('Grid - Large Screen column count','toranj'),
+        'desc'        => __('Number of grid columns at large screens', 'toranj'),
+        'std'         => '4',
+        'type'        => 'numeric-slider',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '1,6',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid___medium_screen_column_count',
+        'label'       => __('Grid - Medium Screen Column Count','toranj'),
+        'desc'        => __('For medium devices', 'toranj'),
+        'std'         => '3',
+        'type'        => 'numeric-slider',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '1,10',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid___small_column_count',
+        'label'       => __('Grid - Small Column Count','toranj'),
+        'desc'        => __('For small display devices', 'toranj'),
+        'std'         => '2',
+        'type'        => 'numeric-slider',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '1,3',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
+      array(
+        'id'          => 'bulk_gallery_grid___xs_column_count',
+        'label'       => __('Grid - Mobile Screen Column Count','toranj'),
+        'desc'        => __('For Mobile display devices', 'toranj'),
+        'std'         => '1',
+        'type'        => 'numeric-slider',
+        'section'     => 'bulk_gallery',
+        'rows'        => '',
+        'post_type'   => '',
+        'taxonomy'    => '',
+        'min_max_step'=> '1,3',
+        'class'       => '',
+        'condition'   => 'bulk_gallery_index_layout:is(grid)',
+        'operator'    => 'and'
+      ),
       /**
        * ----------------------------------------------------------------------------------------
        * woocommerce

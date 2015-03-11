@@ -566,7 +566,7 @@ if ( ! function_exists( 'owlab_portfolio_single_nav' ) ) {
   * ----------------------------------------------------------------------------------------
  */
 if ( ! function_exists( 'owlab_portfolio_regular_nav' ) ) {
-	function owlab_portfolio_regular_nav() { 
+	function owlab_portfolio_regular_nav($class="") { 
 		
 		$next = get_next_post();
 		$prev = get_previous_post();
@@ -576,7 +576,7 @@ if ( ! function_exists( 'owlab_portfolio_regular_nav' ) ) {
 		if ($next OR $prev){
 		?>
 			<hr>
-			<div id="post-nav">
+			<div id="post-nav" class="portfolio-regular-nav <?php echo $class; ?>">
 				<?php if ( $prev ) : ?>
 				<a class="portfolio-prev prev-post btn btn-lg btn-simple pull-left" href="<?php echo get_permalink( $prev->ID ); ?>"><?php _e('Prev','toranj') ?></a>
 				<?php endif; ?>
@@ -586,6 +586,7 @@ if ( ! function_exists( 'owlab_portfolio_regular_nav' ) ) {
 				<?php if ( $next ) : ?>
 				<a class="portfolio-next next-post btn btn-lg btn-simple pull-right" href="<?php echo get_permalink( $next->ID ); ?>"><?php _e('Next','toranj') ?></a>
 				<?php endif; ?>
+				<div class="clearfix"></div>
 			</div>
 		<?php
 		}
@@ -656,14 +657,16 @@ if ( ! function_exists( 'owlab_portfolio_meta' ) ) {
  * ----------------------------------------------------------------------------------------
  */
 if ( ! function_exists('owlab_get_gallery_overlay')){
-	function owlab_get_gallery_overlay($type='simple-icon')
+	function owlab_get_gallery_overlay($type='simple-icon',$icon='',$title='', $subtitle='')
 	{	
 
-
-		if ( function_exists("ot_get_option")){
-			$icon = ot_get_option('gallery_overlay_icon_class', 'fa-link');
-		}else{
-			$icon = "fa-link";
+		//if there is no icon passed get it from gallery options
+		if ($icon == ''){
+			if ( function_exists("ot_get_option")){
+				$icon = ot_get_option('gallery_overlay_icon_class', 'fa-link');
+			}else{
+				$icon = "fa-link";
+			}
 		}
 
 		switch ($type) {
@@ -706,6 +709,27 @@ if ( ! function_exists('owlab_get_gallery_overlay')){
 				$parent_class = 'tj-hover-5 colorbg';
 				break;
 			
+			case 'tj-hover-1':
+				$markup = '<div class="tj-overlay">
+							<h3 class="title">'.$title.'</h3>
+							<h4 class="subtitle">'.$subtitle.'</h4>
+						</div>';
+				$parent_class = 'tj-hover-1';
+				break;
+
+			case 'tj-hover-2':
+				
+				$markup = '<div class="tj-overlay">
+								<i class="fa fa-angle-right overlay-icon"></i>
+								<div class="overlay-texts">
+									<h3 class="title">'.$title.'</h3>
+									<h4 class="subtitle">'.$subtitle.'</h4>
+								</div>
+							</div>';
+				$parent_class = 'tj-hover-2';
+
+				break;
+
 			default:
 				$markup = '<div class="tj-overlay"></div>';
 				$parent_class = 'tj-hover-5';
@@ -720,22 +744,78 @@ if ( ! function_exists('owlab_get_gallery_overlay')){
 
 /**
  * ----------------------------------------------------------------------------------------
+ * portfolio overlay type 
+ * ----------------------------------------------------------------------------------------
+ */
+if ( ! function_exists('owlab_get_portfolio_overlay')){
+	function owlab_get_portfolio_overlay($type='tj-hover-1', $title="", $subtitle="")
+	{	
+
+
+		switch ($type) {
+			case 'tj-hover-1':
+				$markup = '<div class="tj-overlay">
+							<h3 class="title">'.$title.'</h3>
+							<h4 class="subtitle">'.$subtitle.'</h4>
+						</div>';
+				$parent_class = 'tj-hover-1';
+				break;
+
+			case 'tj-hover-2':
+				
+				$markup = '<div class="tj-overlay">
+								<i class="fa fa-angle-right overlay-icon"></i>
+								<div class="overlay-texts">
+									<h3 class="title">'.$title.'</h3>
+									<h4 class="subtitle">'.$subtitle.'</h4>
+								</div>
+							</div>';
+				$parent_class = 'tj-hover-2';
+
+				break;
+			
+			default:
+				$markup = '';
+				$parent_class = '';
+				break;
+		}
+		
+
+		return array ('markup' => $markup, 'parent_class'=>$parent_class);
+	}
+}
+
+/**
+ * ----------------------------------------------------------------------------------------
  * decide between lazyload and not
  * ----------------------------------------------------------------------------------------
  */
 if ( ! function_exists( 'owlab_lazy_image' ) ) {
-	function owlab_lazy_image($img='', $title='', $echo=true,$class="img-responsive") {
+	function owlab_lazy_image($img='', $title='', $echo=true, $class="img-responsive") {
 		
+		$blank = get_template_directory_uri().'/assets/img/blank.jpg';
 		
-		if(empty($img) || $img == NULL){
-			$img_src = get_template_directory_uri().'/assets/img/blank.jpg';
-		}else{
+		$img_src = $blank;
+		$img_width = 1000;
+		$img_height = 750;
+
+		if( !empty($img) ){
+			
 			if ( is_array($img) ){
 				$img_src = $img[0];
 				$img_width = $img[1];
 				$img_height = $img[2];
-			}else{
-				$img_src = $img;
+			}
+			else
+			{
+				
+				$image_size = getimagesize($img);
+				if ( $image_size ){
+					$img_src = $img;
+					$img_width = $image_size[0];
+					$img_height = $image_size[1];
+				}
+
 			}
 		}
 			
@@ -747,7 +827,7 @@ if ( ! function_exists( 'owlab_lazy_image' ) ) {
 			$data .= ' data-height='.$img_height;
 
 		if (ot_get_option('enable_lazyloud') == "on"): 
-		$out =  '<img data-original="'.$img_src.'" alt="'.$title.'" class="'.$class.' lazy" '.$data.'>';
+		$out =  '<img data-original="'.$img_src.'" src="'.generate_blank_image($img_width,$img_height).'" width="'.$img_width.'" height="'.$img_height.'" alt="'.$title.'" class="'.$class.' lazy" '.$data.'>';
 		else:
 		$out = '<img src="'.$img_src.'" alt="'.$title.'" class="'.$class.'" '.$data.'>';
 		endif;
@@ -787,6 +867,560 @@ if ( ! function_exists( 'owlab_video_background' ) ) {
 		
 	}
 }
+
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * horizontal scroll markup
+ * ----------------------------------------------------------------------------------------
+ */
+if ( ! function_exists('owlab_horizontalscroll_gallery')){
+	function owlab_horizontalscroll_gallery($data,$type="loop"){
+
+		//extract the data
+		extract(shortcode_atts(array(
+            'loop'          => '',
+            'hide_sidebar'  => 'no',
+            'title2'        => '',
+            'title'         => '',
+            'content'       => '',
+            'width_mode'    => 'fixed_width',
+            'default_width' => 350,
+            'overlay_type'  => '',
+            'fill_mode'     => 'fill_cover',
+            'sub_albums_title' => '',
+            'the_album_childs' => array()
+        ), $data));
+
+		// do we want to have a sidebar 
+		$nosideClass='';
+        if($hide_sidebar=="yes"){
+            $nosideClass = " no-side";
+        }
+
+        $output='';
+		if ( $hide_sidebar != "yes" ){
+            $output .= '<!-- Page sidebar -->
+            <div class="page-side">
+                <div class="inner-wrapper vcenter-wrapper">
+                    <div class="side-content vcenter">
+
+                        <!-- Page title -->
+                        <h1 class="title">
+                            <span class="second-part">'.esc_html( $title2 ).'</span>
+                            <span>'.esc_html( $title ).'</span>
+                        </h1>
+                        <!-- /Page title -->
+            ';
+            if ( isset($content) ){
+                $output .='
+                        <div class="hidden-sm hidden-xs">
+                            '.$content.'
+                        </div>
+                ';
+            }
+
+           if (count($the_album_childs) >0 ):
+					
+				$output .= '<div class="hidden-sm hidden-xs"><h5 class="lined">'.$sub_albums_title.'</h5>';
+				$output .='<ul class="list list-unstyled">';
+					foreach ($the_album_childs as $child):
+						$output .='<li><a href="'.get_term_link( $child->term_id, $child->taxonomy ).'">'.$child->name.'</a></li>';
+					endforeach;
+				$output .='</ul></div>';	
+					
+			endif;
+
+            $output .= '
+                    </div>
+                </div>
+            </div>
+            <!-- /Page sidebar -->
+            ';
+        }
+
+        
+
+        $output .='
+        <!-- Page main content -->
+        <div class="page-main horizontal-folio-wrapper set-height-mobile tj-lightbox-gallery'. $nosideClass .'" data-mode="'.$width_mode.'" data-default-width="'.$default_width.'">
+
+            <!-- Portfolio wrapper -->  
+            <div class="horizontal-folio">';
+        
+        if ( $type == 'loop'){
+
+	        if ( $loop->have_posts() ) {
+	        	while( $loop->have_posts() ) 
+	    		{ 
+	    			$loop->the_post(); 
+	        
+		            $owlabgal_meta = get_post_meta( $loop->post->ID ); 
+		            $item_overlay = owlab_get_gallery_overlay($overlay_type);
+		            
+
+		            $img_full=wp_get_attachment_image_src( get_post_thumbnail_id($loop->post->ID), 'full' );
+
+		            $img_url=$img_full[0];
+
+		            //Ratio of original image 
+		            $img_ratio=($img_full[2]>0)?round($img_full[1]/$img_full[2],2):0;
+
+		            //Generate the image markup based on lazy load option
+		            $img_markup=owlab_lazy_image($img_url, get_the_title(), false);
+
+
+		            $output .='
+		                    <!-- Portfolio Item -->     
+		                    <div class="gp-item '.$item_overlay['parent_class'].'" data-ratio="'.$img_ratio.'">
+		                        <a href="'.$img_url.'" class="lightbox-gallery-item set-bg '.$fill_mode.'" title="'. get_the_title().'">
+
+		                           	'.$img_markup.'
+
+		                            '.$item_overlay['markup'].'  
+		                        </a>
+		                    </div>
+		                    <!-- /Portfolio Item -->
+		            ';
+	    		} 
+		    } else{
+		    	$output.= __('No items found.','toranj');
+		    }
+
+		} elseif ( $type == 'array' ) {
+
+
+			if ( !empty($loop) ) {
+
+				foreach( $loop as $group ) { 
+
+					$group = (Array) $group;
+					$term_link = get_term_link( $group['slug'],'owlabgal_album' );
+
+		            $output .='
+		                    <!-- Portfolio Item -->     
+		                    <div class="gp-item tj-circle-hover">
+		                        <a href="'.$term_link.'" class="set-bg">';
+		                    $output.=owlab_lazy_image(isset($group['owlabgal_album_image'])?$group['owlabgal_album_image']:false,$group['name'],false);
+		                    $output .='<div class="tj-overlay">
+		                                <div class="content">
+		                                    <div class="circle">
+		                                        <i class="fa fa-link"></i>
+		                                    </div>
+		                                    <div class="details">
+		                                        <h4 class="title">'.$group['name'].'</h4>
+		                                    </div>  
+		                                </div>
+		                            </div>  
+		                        </a>
+		                    </div>
+		                    <!-- /Portfolio Item -->
+		            ';
+	        	}
+
+	        }else{ 
+	            $output.= __('No items found.','toranj');
+	        }
+
+		} elseif ( $type =='bulk_gal') {
+			if ( $loop->have_posts() ) {
+	        	while( $loop->have_posts() ) 
+	    		{ 
+	    			$loop->the_post(); 
+	        
+		            $owlabgal_meta = get_post_meta( $loop->post->ID ); 
+		            $item_overlay = owlab_get_gallery_overlay($overlay_type);
+		            $thumb_url = wp_get_attachment_image_src( get_post_thumbnail_id($loop->post->ID), 'blog-thumb' );
+		            // [0] => url
+		            // [1] => width
+		            // [2] => height
+		            // [3] => boolean: true if $url is a resized image, false if it is the original.
+
+		            $img_full=wp_get_attachment_image_src( get_post_thumbnail_id($loop->post->ID), 'full' );
+
+		            $img_url=$img_full[0];
+
+		            //Ratio of original image 
+		            $img_ratio=($img_full[2]>0)?round($img_full[1]/$img_full[2],2):0;
+
+		            //Generate the image markup based on lazy load option
+		            $img_markup=owlab_lazy_image($img_url, get_the_title() ,false, 'img-responsive');
+
+		            $output .='
+		                    <!-- Portfolio Item -->     
+		                    <div class="gp-item tj-circle-hover">
+		                        <a href="'.get_the_permalink().'" class="set-bg">
+		                            '.$img_markup.'
+
+		                            <div class="tj-overlay">
+		                                <div class="content">
+		                                    <div class="circle">
+		                                        <i class="fa fa-link"></i>
+		                                    </div>
+		                                    <div class="details">
+		                                        <h4 class="title">'.get_the_title().'</h4>
+		                                    </div>  
+		                                </div>
+		                            </div>  
+		                        </a>
+		                    </div>
+		                    <!-- /Portfolio Item -->
+		            ';
+	    		} 
+		    } else{
+		    	$output.= __('No items found.','toranj');
+		    }
+		}
+            
+                           
+                    
+        $output .='</div><!-- /Portfolio wrapper --> 
+        	</div><!-- Page main content -->';
+
+        return $output;
+        
+	}
+}
+
+
+
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * grid gallery layout
+ * ----------------------------------------------------------------------------------------
+ */
+if ( ! function_exists('owlab_grid_gallery')){
+	function owlab_grid_gallery($data,$type="loop"){
+
+		//extract the data
+		extract(shortcode_atts(array(
+            'loop'          => '',
+            'type'			=> '',
+            'origin'		=> '',
+            'hide_sidebar'  => 'no', // yes / no
+            'title2'        => '',
+            'title'         => '',
+            'side_content'  => '',
+            'show_filter'   => 'off', // on / off
+            'filter_data'	=> array(),
+            'filter_title'	=> 'filter',
+            'taxonomy'      => '',
+            'taxonomy_data'	=> '',
+            'same_ratio'	=> '', // on / off
+            'remove_space'  => 'on', // om / off
+            'lg_cols'       => 4,
+		    'md_cols'       => 3,
+		    'sm_cols'       => 2,
+		    'xs_cols'       => 1,
+ 			'overlay_type'  => '',
+ 			'thumbnail_size'=> 'blog-thumb'
+        ), $data));
+
+
+		$output = '';
+
+		$nosideClass=' no-side';
+
+        if($hide_sidebar!="yes"){
+
+            $nosideClass = "";
+
+            $output.='
+            <!-- Page sidebar from function-->
+			<div class="page-side">
+				<div class="inner-wrapper vcenter-wrapper">
+					<div class="side-content vcenter">
+
+						<!-- Page title -->
+						<div class="title">
+							<span class="second-part">'.$title2.'</span>
+							<span>'.$title.'</span>
+						</div>
+						<!-- /Page title -->
+						<p>'.wpautop($side_content).'</p>
+						';
+
+				if (count($filter_data) >0 && $show_filter=='on'):
+					$output .='
+						<div class="grid-filters-wrapper">
+							<a href="#" class="select-filter"><i class="fa fa-filter"></i> '.$filter_title.'</a>
+							<ul class="grid-filters">
+							  	<li class="active"><a href="#" data-filter="*">'.__('All','toranj').'</a></li>
+							  	';
+						foreach ($filter_data as $filter):
+							$output .= '<li><a href="#" data-filter=".'.$filter->slug.'">'.$filter->name.' - '.$filter->count.'</a></li>';
+						endforeach;
+
+						$output.='
+							</ul>
+						</div>';
+				endif;
+
+				$output .= '
+
+					</div>
+				</div>
+			</div>
+			<!-- /Page sidebar -->
+            ';
+        }
+
+        $same_ration_class = $same_ratio =="on" ? ' same-ratio-items' : '';
+        $no_padding_class = $remove_space=='on' ? ' no-padding' : '';
+        
+
+        $output .='
+        <!-- Page main content -->
+		<div class="page-main '.$nosideClass.'">
+
+			<!-- Gallery wrapper -->	
+			<div class="grid-portfolio tj-lightbox-gallery'.$same_ration_class.$no_padding_class.'" lg-cols="'.$lg_cols.'" md-cols="'.$md_cols.'" sm-cols="'.$sm_cols.'" xs-cols="'.$xs_cols.'">';
+				
+
+			$output .= owlab_get_grid_loop_layout($origin,$type,$loop,$taxonomy,$overlay_type,$thumbnail_size);	
+			
+
+			if( $show_filter == 'on' && $hide_sidebar=="yes" ):
+			$output .= '
+			<!-- Grid filter -->
+			<div class="fixed-filter">
+				<a href="#" class="select-filter"><i class="fa fa-filter"></i> '.$filter_title.'</a>
+				<ul class="grid-filters">
+				  	<li class="active"><a href="#" data-filter="*">'.__('All','toranj').'</a></li>';
+				  	
+				  	foreach ($filter_data as $filter):
+				  		$output .= '<li><a href="#" data-filter=".'.$filter->slug.'">'.$filter->name.' - '.$filter->count.'</a></li>';
+					endforeach;
+
+				$output .= '
+				</ul>
+			</div>
+			<!-- /Grid filter -->
+			';
+			endif;
+
+
+			$output .='
+			</div>
+			<!-- /Gallery wrapper -->	
+			
+		</div>
+		<!-- /Page main content -->
+	    ';
+
+        return $output;
+
+	}
+}
+
+//helper function for grid gallery
+function owlab_get_grid_loop_layout($origin,$type,$loop,$taxonomy,$overlay_type,$thumbnail_size){
+
+	$output = '';
+
+	$sizer_defined = 0;
+	if ( $loop->have_posts() ) : while( $loop->have_posts() ) : $loop->the_post();
+
+
+		if( get_post_status()=='private' ) continue;
+		
+		$owlabgal_meta = get_post_meta( $loop->post->ID );
+		
+		//thumnail 
+		$thumb_url = wp_get_attachment_image_src( get_post_thumbnail_id($loop->post->ID), $thumbnail_size );
+
+		//default valus
+		$taxonomy_terms = $sizer_class = $data_width_ratio = '';
+
+		//more data based on origin
+		if ($origin =='bulk_gallery_tax') //comes from taxonomy page of bulk gallery
+		{	
+				//taxonomy terms
+				$taxonomy_terms = owlab_get_taxonomy_terms($loop,$taxonomy);
+				
+				$gallery_data = unserialize($owlabgal_meta['_owlabbulkg_slider_data'][0]);
+				
+				//short des
+				$short_des = $gallery_data['config']['short_des'];
+
+				//sizer - no need
+				//ratio - no need
+		
+		} elseif ( $origin == 'bulk_gallery_archive') { //comes from archive page of bulk gallery
+
+				//taxonomy terms 
+				$taxonomy_terms = owlab_get_taxonomy_terms($loop,$taxonomy);
+
+				$owlabbulk_meta = unserialize($owlabgal_meta['_owlabbulkg_slider_data'][0]);
+				//short des
+				$short_des = isset($owlabbulk_meta['config']['short_des']) ? $owlabbulk_meta['config']['short_des'] : '';
+
+				//sizer
+				if ( isset($owlabbulk_meta['config']['grid_sizer']) ){
+					$sizer_defined = 1;
+					$sizer_class = ' grid-sizer';
+				}
+
+				//ratio
+				if ( isset($owlabbulk_meta['config']['ratio']) ){
+					$data_width_ratio = 'data-width-ratio= "'.intval($owlabbulk_meta['config']['ratio']).'"';
+				} 
+
+		} elseif ( $origin == 'gallery_tax' ) { //comes from taxonomy page of gallery
+
+				//taxonomy terms
+				$taxonomy_terms = owlab_get_taxonomy_terms($loop,$taxonomy);
+
+				//short des - no need
+
+				//sizer
+				if ( array_key_exists('owlabgal_grid_sizer', $owlabgal_meta) && $sizer_defined !=1 ){
+					$sizer_defined = 1;
+					$sizer_class = ' grid-sizer';
+				}
+
+				//ratio
+				if (!empty($owlabgal_meta['owlabgal_grid_ratio'][0])){
+					$data_width_ratio = 'data-width-ratio= '.intval($owlabgal_meta['owlabgal_grid_ratio'][0]).'"';
+				}
+
+		} elseif( $origin == 'gallery_archive' ){
+
+				//taxonomy terms 
+				$taxonomy_terms = owlab_get_taxonomy_terms($loop,$taxonomy);
+
+				//short des - no need
+
+				//sizer
+				if ( array_key_exists('owlabgal_grid_sizer', $owlabgal_meta) && $sizer_defined !=1 ){
+					$sizer_defined = 1;
+					$sizer_class = ' grid-sizer';
+				}
+
+				//ratio
+				if ( !empty($owlabgal_meta['owlabgal_grid_ratio'][0]) ){
+					$data_width_ratio = 'data-width-ratio= '.intval($owlabgal_meta['owlabgal_grid_ratio'][0]).'"';
+				}
+
+		}
+		
+
+
+
+
+		// based on the type we need to change the layout function and the link href and class	
+		if ($type == 'linkable'){
+			
+				$item_overlay = owlab_get_gallery_overlay($overlay_type,'',get_the_title(),$short_des);
+				$link_open_tag = '<a href="'.get_the_permalink().'">';
+
+		} elseif ($type == 'lightbox'){
+			
+				//we need img_url only for lightbox
+				$img_url = wp_get_attachment_url( get_post_thumbnail_id($loop->post->ID) );
+
+				$item_overlay = owlab_get_gallery_overlay($overlay_type);
+				$link_open_tag = '<a href="'.$img_url.'"  class="lightbox-gallery-item" title="'.get_the_title().'">';
+		}
+
+		$output .='
+		<!-- Gallery Item -->		
+		<div class="gp-item '.$item_overlay['parent_class'].' '.$taxonomy_terms.$sizer_class.'" '.$data_width_ratio.'> 
+			'.$link_open_tag.'
+				'.owlab_lazy_image( $thumb_url, get_the_title(),false ).'
+				<!-- Item Overlay -->	
+				'.$item_overlay['markup'].'
+				<!-- /Item Overlay -->	
+			</a>
+		</div>
+		<!-- /Gallery Item -->';
+
+	endwhile; else:
+		$output .= __('No items found.','toranj');
+	endif;
+
+	return $output;
+}
+
+
+//helper for grid
+function owlab_get_taxonomy_terms($loop,$taxonomy){
+
+	$the_terms = wp_get_post_terms( $loop->post->ID, $taxonomy, array('fileds' => 'all') ); 
+		 	
+ 	$this_terms =array();
+ 	if (is_array($the_terms)){
+	 	foreach($the_terms as $term){
+	 		$this_terms[]= $term->slug;
+	 	}
+ 	}
+ 	$album_terms = implode(' ', $this_terms);
+
+ 	return $album_terms;
+}
+		
+
+
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * extera class prepare for vc
+ * ----------------------------------------------------------------------------------------
+ */
+function owlab_getExtraClass( $el_class ) {
+	$output = '';
+	if ( $el_class != '' ) {
+		$output = " " . str_replace( ".", "", $el_class );
+	}
+	return $output;
+}
+
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * 500px font-face 
+ * @since 1.3.2
+ * ----------------------------------------------------------------------------------------
+ */
+if ( !function_exists("owlab_include_500px_css")){
+	function owlab_include_500px_css(){
+		// register the 500px css file , make sure you have included the font-faces 
+		wp_register_style( '500px-font-faces' , OWLAB_CSS . '/vendors/fontello-500px.css',array(),THEME_VERSION);
+		wp_enqueue_style( '500px-font-faces');
+	}
+	add_action("wp_enqueue_scripts", "owlab_include_500px_css");
+}
+
+
+
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * Generate blank image
+ * ----------------------------------------------------------------------------------------
+ */
+function generate_blank_image($w,$h) {
+		
+		global $blank_images;
+
+		$size = "{$w}x{$h}";
+		if ( isset($blank_images[$size]) ) {
+			return $blank_images[$size];
+		}
+
+		// create blank img
+		$image = imagecreate($w, $h);
+		imagesavealpha($image, true);
+		imagecolortransparent($image, imagecolorallocatealpha($image, 0, 0, 0, 0));
+		ob_start();
+		imagegif($image);
+		$blank_images[$size] = "data:image/gif;base64,".base64_encode(ob_get_clean());
+		imagedestroy($image);
+		
+
+		return $blank_images[$size];
+	}
 
 
 

@@ -22,7 +22,8 @@
 						<?php owlab_portfolio_meta($owlabpfl_meta); ?>
 					</ul>	
 					<div>
-						<?php echo array_key_exists('owlabpfl_side_des', $owlabpfl_meta) ? $owlabpfl_meta["owlabpfl_side_des"][0] : ''; ?>
+						<?php echo wpautop(array_key_exists('owlabpfl_side_des', $owlabpfl_meta) ? $owlabpfl_meta["owlabpfl_side_des"][0] : ''); ?>
+
 					</div>
 				</div>
 				
@@ -126,7 +127,7 @@
 							<?php owlab_portfolio_meta($owlabpfl_meta); ?>
 						</ul>	
 						<div>
-							<?php echo $owlabpfl_meta["owlabpfl_side_des"][0]; ?>
+							<?php echo wpautop($owlabpfl_meta["owlabpfl_side_des"][0]); ?>
 						</div>
 
 						<!-- portfolio nav -->

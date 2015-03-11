@@ -19,7 +19,10 @@
 					
 					<ul class="list-items">
 						<?php owlab_portfolio_meta($owlabpfl_meta); ?>
-					</ul>	
+					</ul>
+					<div>
+						<?php echo wpautop(array_key_exists('owlabpfl_side_des', $owlabpfl_meta) ? $owlabpfl_meta["owlabpfl_side_des"][0] : ''); ?>
+					</div>
 				</div>
 			</div>
 			<!-- portfolio nav -->

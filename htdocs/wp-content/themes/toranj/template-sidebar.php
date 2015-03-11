@@ -1,6 +1,6 @@
 <?php 
 /**
- * Template Name: Normal page with sidebar
+ * Template Name: Default with Sidebar
  *
  *
  * @author owwwlab
@@ -17,11 +17,15 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-9">
+
+					<?php if (ot_get_option('show_breadcrumbs','on') == 'on'): ?>
 					<!-- breadcrumbs -->
 					<ol class="breadcrumb">
 						<?php if(function_exists('the_owlab_breadcrumbs')) the_owlab_breadcrumbs(); ?>
 					</ol>
 					<!--/ breadcrumbs -->
+					<?php endif; ?>
+
 					<?php while( have_posts() ) : the_post(); ?>
 						<!-- page title -->	
 						<h2 class="section-title double-title">

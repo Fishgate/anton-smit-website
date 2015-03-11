@@ -13,11 +13,13 @@
 	<div class="page-wrapper regular-page">
 		<div class="container">
 
+			<?php if (ot_get_option('show_breadcrumbs','on') == 'on'): ?>
 			<!-- breadcrumbs -->
 			<ol class="breadcrumb">
 				<?php if(function_exists('the_owlab_breadcrumbs')) the_owlab_breadcrumbs(); ?>
 			</ol>
 			<!--/ breadcrumbs -->
+			<?php endif; ?>
 
 			<?php while( have_posts() ) : the_post(); ?>
 				

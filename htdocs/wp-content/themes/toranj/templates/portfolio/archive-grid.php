@@ -35,7 +35,7 @@
 					</div>
 					<?php endif; ?>
 
-					<?php echo ot_get_option('portfolio_side_content'); ?>
+					<?php echo wpautop( ot_get_option('portfolio_side_content') ); ?>
 
 
 				</div>

@@ -17,11 +17,11 @@
 			<div class="inner-wrapper vcenter-wrapper">
 				<div class="side-content vcenter">
 					<div class="title">
-						<span class="second-part"><?php _e('Browse Group','toranj'); ?></span>
+						<span class="second-part"><?php echo ot_get_option('portfolio_group_upper_title',__('Browse Group','toranj')); ?></span>
 						<span><?php echo $the_group->name; ?></span>
 					</div>
 					
-					<p><?php echo $the_group->description; ?></p>
+					<p><?php echo wpautop($the_group->description); ?></p>
 
 					<?php if (count($the_group_childs) >0 ): ?>
 					
@@ -51,7 +51,7 @@
 
 				<?php 
 				$owlabpfl_meta = get_post_meta( $id ); 
-				$img_url = wp_get_attachment_url( get_post_thumbnail_id($id) , 'large');
+				$img_url = wp_get_attachment_image_src( get_post_thumbnail_id($id) , 'large');
 				$owlab_load = "i";
 	            if(!empty($owlabpfl_meta["owlabpfl_use_video"]) && $owlabpfl_meta["owlabpfl_use_video"][0]=='on'){
 	            	$owlab_load = "v";

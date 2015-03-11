@@ -38,3 +38,91 @@ v 1.1.0 - 10/7/2014
 - Fixed accent color issues
 - Changed portfolio navigations to show at non-ajax mode
 - Updated child-theme
+
+
+v 1.2.0 - 10 Oct 2014
+
+- Added New Bulk Gallery plugin
+- Updated Kenburn Slider Plugin
+- Updated Portfolio Plugin
+- Updated Gallery Plugin
+- Added portfolio grid element in visual composer
+- Added capability to change custom post type slugs at theme options 
+- Added capability to filter custom post type slugs within child theme
+- Added capability of different image widths to Horizontal scroll gallery visual composer element
+- Added capability to limit by albums in list of albums visual composer element
+- Added de_DE language files
+- Added Fa_IR language files
+- Removed Visual composer activation notice 
+- Updated FontAwesome updated to v 4.2
+- Added archive pages links to admin menu setting page
+- Added password protected galleries via bulk gallery plugin
+- Added more coloring options to theme option
+- Added capability to have fullwidth rows at fullwidth page templates
+- Added taxonomy label archive page
+- Updated visual composer elements icons
+- More optimizations for image sizes
+- Fixed Double Carousel keyboard navigation
+- Fixed portfolio descriptions and gallery and group descriptions paragraphs
+- Fixed double Carousel social icon links
+- Fixed kenburn slider issue
+- Fixed accent color theme option bug in firefox
+- Deprecated "Dark Normal Page" and "Normal Page" templates, you can gain the same with fullwidth templates
+
+
+v 1.3.0 
+- Fixed automatic plugin notifications for bulk gallery
+- Fixed gallery sharing issue
+- Fixed bulk plugin install issue
+- Gallery albums and portfolio groups shortcodes now will show exactly albums based on given slugs
+- Removed cover image from portfolio regualr layouts
+- Fixed portfolio regular layouts navigation
+- Added gallery sharing colors to theme option accent color
+- Changed thumbs of horizontal gallery to use the full image size
+- Breadcrubms are optional via theme options
+- Bulk gallery slider will use the full image size if you choose not to crop option.
+- Fixed button vc element bug
+- Added some theme options including custom css field
+- Added full page layout for portfolios
+- Fixed minor css bugs
+
+
+
+v 1.3.1
+- Updated Visual Composer plugin to v 4.3.5
+- Updated MasterSlider plugin to v 2.9.6
+- Fixed responsive issue for regualr portfolio navs
+
+
+v 1.4.0
+- Updated Visual Composer plugin to v 4.4.2
+- Updated MasterSlider plugin to v 2.9.8
+- Added lazyLoading for images as an option to theme
+- Fixed kenburn slider caption font 
+- Updated kenburn Slider plugin to v1.2.1 and fixed the link issue
+- Added 500px.com to social icons
+- Improved visual composer title element 
+- Fixed single light-box element at visual composer
+- Fixed warning at edit album page
+- Fixed video background elements height in touch devices
+- Fixed some font-family minor bugs 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

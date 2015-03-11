@@ -1,6 +1,6 @@
 <?php 
 /**
- * Template Name: Normal fullwidth
+ * Template Name: Fullwidth Light
  *
  * The template to display those layouts which need absolute positioning.
  *

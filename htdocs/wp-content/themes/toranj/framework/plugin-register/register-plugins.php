@@ -36,47 +36,56 @@ function owlab_register_required_plugins() {
 	 */
 	$plugins = array(
 
-		
+
+		array(
+            'name'     				=> 'owwwlab Bulk Gallery - For TORANJ',
+            'slug'     				=> 'owwwlab-bulk-gallery',
+            'source'   				=> get_template_directory() . '/framework/plugin-register/plugins/owwwlab-bulk-gallery-v1.2.0.zip',
+            'required' 				=> true,
+            'version' 				=> '1.2.0',
+            'force_activation' 		=> false,
+            'force_deactivation' 	=> false,
+        ),
 		array(
             'name'     				=> 'owwwlab KenBurned Slideshow - For TORANJ',
             'slug'     				=> 'owwwlab-kenburn',
-            'source'   				=> get_stylesheet_directory() . '/framework/plugin-register/plugins/owwwlab-kenburn.zip',
+            'source'   				=> get_template_directory() . '/framework/plugin-register/plugins/owwwlab-kenburn-v1.2.1.zip',
             'required' 				=> true,
-            'version' 				=> '1.1.0',
+            'version' 				=> '1.2.1',
             'force_activation' 		=> false,
             'force_deactivation' 	=> false,
         ),
 		array(
             'name'     				=> 'owwwlab Gallery Plugin - For TORANJ',
             'slug'     				=> 'owwwlab-gallery',
-            'source'   				=> get_stylesheet_directory() . '/framework/plugin-register/plugins/owwwlab-gallery.zip',
+            'source'   				=> get_template_directory() . '/framework/plugin-register/plugins/owwwlab-gallery-v1.2.2.zip',
             'required' 				=> true,
-            'version' 				=> '1.1.0',
+            'version' 				=> '1.2.2',
             'force_activation' 		=> false,
             'force_deactivation' 	=> false,
         ),
         array(
             'name'     				=> 'owwwlab Portfolio Plugin - For TORANJ',
             'slug'     				=> 'owwwlab-portfolio',
-            'source'   				=> get_stylesheet_directory() . '/framework/plugin-register/plugins/owwwlab-portfolio.zip',
+            'source'   				=> get_template_directory() . '/framework/plugin-register/plugins/owwwlab-portfolio-v1.2.2.zip',
             'required' 				=> true,
-            'version' 				=> '1.1.0',
+            'version' 				=> '1.2.2',
             'force_activation' 		=> false,
             'force_deactivation' 	=> false,
         ),
         array(
             'name'     				=> 'WPBakery Visual Composer',
             'slug'     				=> 'js_composer',
-            'source'   				=> get_stylesheet_directory() . '/framework/plugin-register/plugins/js_composer.zip',
+            'source'   				=> get_template_directory() . '/framework/plugin-register/plugins/js_composer.zip',
             'required' 				=> true,
-            'version' 				=> '4.3.4',
+            'version' 				=> '4.4.2',
             'force_activation' 		=> false,
             'force_deactivation' 	=> false,
         ),
         array(
             'name'     				=> 'Envato WordPress Toolkit',
             'slug'     				=> 'envato-wordpress-toolkit-master',
-            'source'   				=> get_stylesheet_directory() . '/framework/plugin-register/plugins/envato-wordpress-toolkit-master.zip',
+            'source'   				=> get_template_directory() . '/framework/plugin-register/plugins/envato-wordpress-toolkit-master.zip',
             'required' 				=> false,
             'version' 				=> '1.7.0',
             'force_activation' 		=> false,
@@ -85,9 +94,9 @@ function owlab_register_required_plugins() {
         array(
             'name'     				=> 'Master Slider WP',
             'slug'     				=> 'masterslider',
-            'source'   				=> get_stylesheet_directory() . '/framework/plugin-register/plugins/masterslider.zip',
+            'source'   				=> get_template_directory() . '/framework/plugin-register/plugins/masterslider.zip',
             'required' 				=> false,
-            'version' 				=> '2.7.2',
+            'version' 				=> '2.9.8',
             'force_activation' 		=> false,
             'force_deactivation' 	=> false,
         ),
@@ -95,18 +104,21 @@ function owlab_register_required_plugins() {
 			'name' 					=> 'Contact Form 7',
 			'slug' 					=> 'contact-form-7',
 			'required' 				=> false,
+			'version' 				=> '4.0.1',
 		),
 
 		array(
 			'name' 					=> 'Simple Custom Post Order',
 			'slug' 					=> 'simple-custom-post-order',
 			'required' 				=> false,
+			'version' 				=> '2.0.0',
 		),
 
 		array(
 			'name' 					=> 'Category Order and Taxonomy Terms Order',
 			'slug' 					=> 'taxonomy-terms-order',
 			'required' 				=> false,
+			'version' 				=> '1.4.0',
 		),
 
 	);

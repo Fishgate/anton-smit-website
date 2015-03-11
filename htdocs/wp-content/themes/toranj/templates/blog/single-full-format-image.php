@@ -14,7 +14,7 @@
 
 	<!-- Header image -->
 	<div class="header-cover set-bg">
-		<?php the_post_thumbnail('blog-thumb',array(
+		<?php the_post_thumbnail('full',array(
 			'class' => 'img-fit'
 		)); ?>
 	</div>

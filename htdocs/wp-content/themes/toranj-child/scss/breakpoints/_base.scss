@@ -21,6 +21,16 @@ http://themeforest.net/item/toranj-responsive-creative-wordpress-theme/8977823
 
 }
 
+#navigation {
+    ul.sub-menu {
+        li {
+            a {
+                text-transform: uppercase;
+            }
+        }
+    }
+}
+
 #side-bar, 
 #inner-bar, 
 .page-side, 

@@ -21,7 +21,8 @@ $the_album = (object) array_merge((array) $the_album, (array) $term_meta);
 
 get_header(); 
 	
-	switch ( $the_album->owlabgal_layout_type ) {
+	$layout_type = isset ( $the_album->owlabgal_layout_type ) ?$the_album->owlabgal_layout_type: "" ;
+	switch ( $layout_type ) {
 		case 'grid':
 			
 			include(locate_template(OWLAB_TEMPLATES . '/gallery/taxonomy-grid.php'));

@@ -15,7 +15,7 @@ get_header();
 
 	switch ( $layout ) {
 		case 'grid':
-			$owlabgal_albums = get_terms( 'owlabgal_album', 'orderby=count' );
+			
 			include(locate_template(OWLAB_TEMPLATES . '/gallery/archive-grid.php'));
 			break;
 

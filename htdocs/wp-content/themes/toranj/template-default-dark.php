@@ -1,6 +1,6 @@
 <?php 
 /**
- * Template Name: Dark Default Page
+ * Template Name: Default Template Dark
  *
  * The template for displaying all regular pages.
  */
@@ -13,11 +13,13 @@
 	<div class="page-wrapper padding-top">
 		<div class="container">
 
+			<?php if (ot_get_option('show_breadcrumbs','on') == 'on'): ?>
 			<!-- breadcrumbs -->
 			<ol class="breadcrumb">
 				<?php if(function_exists('the_owlab_breadcrumbs')) the_owlab_breadcrumbs(); ?>
 			</ol>
 			<!--/ breadcrumbs -->
+			<?php endif; ?>
 
 			<?php while( have_posts() ) : the_post(); ?>
 				

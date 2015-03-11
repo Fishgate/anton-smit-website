@@ -21,8 +21,7 @@
 			<div class="row mb-large">
 				
 				<div class="col-md-9">
-					<?php $img_url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) , 'large' ); ?>
-					<img src="<?php echo $img_url ?>" alt="<?php the_title(); ?>" class="img-fit" >
+					<?php the_content(); ?>
 				</div>
 				<div class="col-md-3">
 					<h3 class="bordered">Details</h3>
@@ -30,20 +29,13 @@
 						<?php owlab_portfolio_meta($owlabpfl_meta); ?>
 					</ul>
 					<div>
-						<?php echo array_key_exists('owlabpfl_side_des', $owlabpfl_meta) ? $owlabpfl_meta["owlabpfl_side_des"][0] : ''; ?>
+						<?php echo wpautop(array_key_exists('owlabpfl_side_des', $owlabpfl_meta) ? $owlabpfl_meta["owlabpfl_side_des"][0] : ''); ?>
 					</div>
 				</div>
 
 			</div>
 
-			<div class="row mb-large">
-
-				<div class="col-md-12">
-					<?php the_content(); ?>
-				</div>
-
-				
-			</div>
+		
 
 			<?php owlab_portfolio_regular_nav(); ?>
 			<hr>

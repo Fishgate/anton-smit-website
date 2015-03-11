@@ -23,7 +23,8 @@
 						<span><?php echo ot_get_option('gallery_title_1'); ?></span><?php echo ot_get_option('gallery_title_2'); ?>
 					</h2>
 					<!-- /Page title -->
-
+					<?php echo ot_get_option('gallery_side_content'); ?>
+					
 					<?php if( ot_get_option('gallery_grid_show_filters') == 'on' ): ?>
 					<div class="grid-filters-wrapper">
 						<a href="#" class="select-filter"><i class="fa fa-filter"></i> <?php ot_get_option('gallery_grid___filter_title'); ?></a>
@@ -37,7 +38,7 @@
 					</div>
 					<?php endif; ?>
 
-					<?php echo ot_get_option('gallery_side_content'); ?>
+					
 
 				</div>
 				<div class="col-md-9">
@@ -100,3 +101,4 @@
 	</div>
 </div>
 <!-- /Page main wrapper -->
+<?php do_action('owlab_after_content'); ?>

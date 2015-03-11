@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Dark Fullwidth Page
+ * Template Name: Fullwidth Dark
  *
  * The template to display Dark page template.
  * 

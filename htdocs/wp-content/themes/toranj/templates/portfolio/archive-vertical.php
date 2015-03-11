@@ -10,7 +10,7 @@
 
 <!-- Page main wrapper -->
 <div id="main-content" class="abs dark-template">
-	<div class="page-wrapper">
+	
 		
 		<!-- Sidebar -->
 		<div class="page-side ajax-element">
@@ -27,8 +27,8 @@
 		</div>
 		<!-- /Sidebar -->
 
-		<!-- Main Content -->
-		<div class="page-main horizontal-folio-wrapper ajax-element set-height-mobile">
+		<!-- Main Content --> 
+		<div class="page-main horizontal-folio-wrapper ajax-element set-height-mobile" data-mode="fixed_width" data-default-width="350">
 			<!-- Portflio wrapper -->	
 			<div class="horizontal-folio">
 				
@@ -48,8 +48,9 @@
 				<!-- Portflio Item -->		
 				<div class="gp-item tj-circle-hover">
 					<a href="<?php the_permalink(); ?>" class="ajax-portfolio set-bg">
-						<img src="<?php echo $thumb_url[0] ?>" alt="<?php the_title(); ?>" class="img-responsive">
-
+						<!-- <img src="<?php #echo $thumb_url[0] ?>" alt="<?php the_title(); ?>" class="img-responsive"> -->
+						<?php owlab_lazy_image($thumb_url, the_title(), true); ?>
+						
 						<!-- Item Overlay -->	
 						<div class="tj-overlay">
 							<div class="content">
@@ -94,6 +95,6 @@
 		</div>
 		<div id="ajax-folio-item"></div>
 		<!--Ajax folio-->
-	</div>
+	
 </div>
 <!-- /Page main wrapper -->

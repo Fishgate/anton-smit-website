@@ -2,14 +2,13 @@
 Contributors: zemanta
 Tags: search, search highlight, tag search, category search, category exclusion, comment search, page search, admin, seo, post filter, research
 Requires at least: 3.6
-Tested up to: 4.0
-Stable tag: 8.1.2
+Tested up to: 4.1
+Stable tag: 8.1.3
 
 Search Everything increases WordPress' default search functionality in three easy steps.
 
 
 == Update ==
-
 From Jan 24, 2014 Search Everything originaly developed by dancameron, sproutventure will be maintained and developed further by Zemanta.
 
 == Description ==
@@ -55,7 +54,7 @@ Installation Instructions:
 	
 == Terms of Service ==
 
-The plugin source code is released under GPLv2. Usage of plugin is governed by [Zemanta Terms of Service](http://www.zemanta.com/legal/terms-of-service/) and [Zemanta Privacy Policy](http://www.zemanta.com/legal/privacy/).
+The plugin source code is released under GPLv2. Usage of our service is governed by [Zemanta Terms of Service](http://www.zemanta.com/legal/terms-of-service/) and [Zemanta Privacy Policy](http://www.zemanta.com/legal/privacy/).
 
 	
 == Frequently Asked Questions ==
@@ -103,6 +102,7 @@ Note: We changed some labels in settings, old translations might not work and ne
 * Taiwan / Chinese
 
 = What about Terms of Service and Privacy policy? =
+
 Before using the plugin please read the full version of [Zemanta Terms of Service](http://www.zemanta.com/legal/terms-of-service/) and [Zemanta Privacy Policy](http://www.zemanta.com/legal/privacy/).
 
 
@@ -114,6 +114,9 @@ Before using the plugin please read the full version of [Zemanta Terms of Servic
 
 
 == Changelog ==
+
+= 8.1.3 =
+* Support for multitag search
 
 = 8.1.2 =
 * CSS bugfix

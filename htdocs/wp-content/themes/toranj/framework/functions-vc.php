@@ -27,6 +27,7 @@ if (!defined('ABSPATH')) die('-1');
 	 */
    	public $shortcodes;
  	
+    public $inline_js='';
 
 
      /**
@@ -87,18 +88,6 @@ if (!defined('ABSPATH')) die('-1');
     }
         
 
-    /**
-     * ----------------------------------------------------------------------------------------
-     * set the vc as theme and don't prompt for activation
-     * ----------------------------------------------------------------------------------------
-     * @since 1.0.0
-     * @param  void    
-     * @return void
-     */
-    
-    public function vcSetAsTheme() {
-        vc_set_as_theme();
-    }
 
 
     /**
@@ -136,8 +125,7 @@ if (!defined('ABSPATH')) die('-1');
             return;
         }
 
-        //set as theme
-        add_action( 'vc_before_init', array($this,'vcSetAsTheme') );
+        
         
         //map all custom shortcodes
         if ( is_array($this->shortcodes) ){
@@ -149,9 +137,10 @@ if (!defined('ABSPATH')) die('-1');
 
         // remove unvanted 
         $this->remove_core_shortcodes();
-	        
+	   
     
     }
+
     
     /**
      * ----------------------------------------------------------------------------------------
@@ -164,6 +153,9 @@ if (!defined('ABSPATH')) die('-1');
      */
     public function add_all_shortcodes() {
     	
+        if ( ! defined( 'WPB_VC_VERSION' ) )
+            return;
+        
     	if ( is_array($this->shortcodes) ){
 	    	foreach ($this->shortcodes as $sc_name => $sc_array) {
 	    		add_shortcode( $sc_array['base'], array( $this, 'render_'.$sc_name ) );
@@ -329,21 +321,22 @@ if (!defined('ABSPATH')) die('-1');
 			'style'			=>'',
 			'size'			=>'',
 			'icon' 			=>'',
-			'icon_align' 	=>'right'
- 
+			'icon_align' 	=>'right',
+            'el_class'      => ''
 		), $atts)); 
     	
 
         $target = $href = "";
-        $url = $btn_url;
+ 
+        $url = vc_build_link($btn_url);
         if ($url){
     		$target = isset($url['target'])?$url['target']:'';
     		$href = isset($url['url'])?$url['url']:'';	
     	}
 
-    	
+    	$el_class = self::getExtraClass($el_class);
 
-    	$class = 'btn';
+    	$class = 'btn'.$el_class;
     	switch ($style) {
     		case 'default':
     			$class.=' btn-default';
@@ -446,12 +439,12 @@ if (!defined('ABSPATH')) die('-1');
     	}
     	
     	$image_attributes = wp_get_attachment_image_src( $image , 'full' ); // returns an array
-
+        $image_markup = owlab_lazy_image($image_attributes[0], esc_html( $title ), false,'img-fit');
     	$output = '';
     	switch ($style) {
     		case 'style1':
     			$output = '<div class="tj-hover-1">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 								<!-- Item Overlay -->	
 								<div class="tj-overlay">
 									<h3 class="title">'.esc_html( $title ).'</h3>
@@ -463,7 +456,7 @@ if (!defined('ABSPATH')) die('-1');
     		
     		case 'style2':
     			$output = '<div class="tj-hover-2">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 								<!-- Item Overlay -->	
 								<div class="tj-overlay">
 									<i class="fa '.esc_html( $icon ).' overlay-icon"></i>
@@ -478,7 +471,7 @@ if (!defined('ABSPATH')) die('-1');
 
     		case 'style3':
     			$output = '<div class="tj-hover-4">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 								<!-- Item Overlay -->	
 								<div class="tj-overlay">
 									<i class="fa '.esc_html( $icon ).' overlay-icon"></i>
@@ -489,7 +482,7 @@ if (!defined('ABSPATH')) die('-1');
 
     		case 'style4':
     			$output = '<div class="tj-hover-3">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 
 								<!-- Item Overlay -->	
 								<div class="tj-overlay">
@@ -506,7 +499,7 @@ if (!defined('ABSPATH')) die('-1');
 
     		case 'style5':
     			$output = '<div class="tj-circle-hover">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 
 								<!-- Item Overlay -->	
 								<div class="tj-overlay">
@@ -526,7 +519,7 @@ if (!defined('ABSPATH')) die('-1');
 
     		case 'style6':
     			$output = '<div class="tj-hover-5">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 
 								<!-- Item Overlay -->	
 								<div class="tj-overlay"></div>
@@ -536,7 +529,7 @@ if (!defined('ABSPATH')) die('-1');
 
     		case 'style7':
     			$output = '<div class="tj-hover-5 reverse">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 
 								<!-- Item Overlay -->	
 								<div class="tj-overlay"></div>
@@ -546,7 +539,7 @@ if (!defined('ABSPATH')) die('-1');
 
     		case 'style8':
     			$output = '<div class="tj-hover-5 colorbg">
-								<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'" class="img-fit">
+								'.$image_markup.'
 
 								<!-- Item Overlay -->	
 								<div class="tj-overlay"></div>
@@ -679,7 +672,7 @@ if (!defined('ABSPATH')) die('-1');
 
     	$output = '<div class="team-members"><div class="team-item">
 						<div class="team-head">
-							<img src="'.$image_attributes[0].'" alt="'.esc_html( $name ).'" class="img-responsive">
+                            '.owlab_lazy_image($image_attributes, esc_html( $name ), false,'img-responsive').'
 							<ul class="team-socials">';
 		if ( $title1 !=''){
 			$output .='<li><a href="'.esc_url( $title1 ).'" target="_blank"><i class="fa '.esc_html( $icon1 ).'"></i></a></li>';
@@ -752,7 +745,7 @@ if (!defined('ABSPATH')) die('-1');
     		
     		default:
     			$href = $ext_url;
-    			$iframe = true; 
+    			$iframe = "yes"; 
     			break;
     	}
 
@@ -788,7 +781,7 @@ if (!defined('ABSPATH')) die('-1');
         }
 
         $output .='>
-						<img src="'.$image_attributes[0].'" class="img-fit" alt="">
+						'.owlab_lazy_image($image_attributes, '', false,'img-fit').'
 						'.$overlay_html.'
 					</a>';
 
@@ -878,9 +871,9 @@ if (!defined('ABSPATH')) die('-1');
         	$output .= 	'></div>';
         	$output .= $overlay_html.'</a>';
         }else{
-        	$output .= '<img src="'.$image_attributes[0].'" class="img-fit" alt="">
-						'.$overlay_html.'
-					</a>';
+        	$output .= owlab_lazy_image($image_attributes, '', false,'img-fit')
+					   .$overlay_html.
+					   '</a>';
 		}
 
 		return $output;
@@ -992,7 +985,7 @@ if (!defined('ABSPATH')) die('-1');
 			'el_class' => ''
 		), $atts));
  		
- 		$class = '';
+ 		$class = 'vc-item-container';
  		if($border == 'yes')
  			$class .=" list-border";
  		if ($hover == 'yes')
@@ -1221,7 +1214,7 @@ if (!defined('ABSPATH')) die('-1');
                 $media_html .= ' data-src-ogg="'.esc_url( $ogv ).'"';
             $media_html .='"></div>';
         }elseif( $media_type =="image"){
-            $media_html .= '<img src="'.$image_attributes[0].'" alt="'.esc_html( $title ).'">';
+            $media_html .= owlab_lazy_image($image_attributes, esc_html( $title ), false,'');
         }elseif( $media_type == 'none'){
             $style = "style='width:100%;height:100%;'";
         }
@@ -1454,8 +1447,8 @@ if (!defined('ABSPATH')) die('-1');
  		$class = 'compare-'.rand();
  		
  		$output = '<div class="toranj-compare '.$class.'">
-				    <img alt="'.esc_html( $text1 ).'" src="'.$image1_attributes[0].'" />
-				    <img alt="'.esc_html( $text2 ).'" src="'.$image2_attributes[0].'" />
+                    '.owlab_lazy_image($image1_attributes, esc_html( $text1 ), false,'').'
+                    '.owlab_lazy_image($image2_attributes, esc_html( $text2 ), false,'').'
 				</div>';
 
 		$this->inline_js .= '(function($){
@@ -1490,7 +1483,7 @@ if (!defined('ABSPATH')) die('-1');
      * Helper function to loop to posts
      * ----------------------------------------------------------------------------------------
      * 
-     * Note: on't forget to use wp_reset_query() at the end of your usage
+     * Note: don't forget to use wp_reset_query() at the end of your usage
      * 
      * @since 1.0.0
      * @param      
@@ -1547,87 +1540,33 @@ if (!defined('ABSPATH')) die('-1');
             'title2'        => '',
             'overlay_type'  => '',
             'album'         => '',
-            'limit'         => '0'
+            'limit'         => '0',
+            'default_width' => '350',
+            'width_mode'    =>'fixed_width',
+            'fill_mode'     =>'fill_cover'
         ), $atts));
         
         $output = "";
 
         $loop = $this->_prepare_posts_loop('owlabgal',$limit,'owlabgal_album',$album);
+
+
+        $args = array(
+            'loop'          => $loop,
+            'hide_sidebar'  => $hide_sidebar,
+            'title2'        => $title2,
+            'title'         => $title,
+            'content'       => $content,
+            'width_mode'    => $width_mode,
+            'default_width' => $default_width,
+            'overlay_type'  => $overlay_type,
+            'fill_mode'     => $fill_mode
+        );
+
+        $output = owlab_horizontalscroll_gallery($args,'loop');
         
-
-        if ( $hide_sidebar != "yes" ){
-            $output = '<!-- Page sidebar -->
-            <div class="page-side">
-                <div class="inner-wrapper vcenter-wrapper">
-                    <div class="side-content vcenter">
-
-                        <!-- Page title -->
-                        <h1 class="title">
-                            <span class="second-part">'.esc_html( $title2 ).'</span>
-                            <span>'.esc_html( $title ).'</span>
-                        </h1>
-                        <!-- /Page title -->
-            ';
-            if ( isset($content) ){
-                $output .='
-                        <div class="hidden-sm hidden-xs">
-                            '.$content.'
-                        </div>
-                ';
-            }
-                $output .= '
-                    </div>
-                </div>
-            </div>
-            <!-- /Page sidebar -->
-            ';
-        }
-
-        $nosideClass='';
-        if($hide_sidebar=="yes"){
-            $nosideClass = " no-side";
-        }
-
-        $output .='
-        <!-- Page main content -->
-        <div class="page-main horizontal-folio-wrapper set-height-mobile tj-lightbox-gallery'. $nosideClass .'">
-
-            <!-- Portfolio wrapper -->  
-            <div class="horizontal-folio">';
-                        
-        if ( $loop->have_posts() ) : while( $loop->have_posts() ) : $loop->the_post(); 
-            
-            $owlabgal_meta = get_post_meta( $loop->post->ID ); 
-            $item_overlay = owlab_get_gallery_overlay($overlay_type);
-            $thumb_url = wp_get_attachment_image_src( get_post_thumbnail_id($loop->post->ID), 'blog-thumb' );
-            // [0] => url
-            // [1] => width
-            // [2] => height
-            // [3] => boolean: true if $url is a resized image, false if it is the original.
-
-            $img_url = wp_get_attachment_url( get_post_thumbnail_id($loop->post->ID) );
-
-            $output .='
-                    <!-- Portfolio Item -->     
-                    <div class="gp-item '.$item_overlay['parent_class'].'">
-                        <a href="'.$img_url.'" class="lightbox-gallery-item set-bg" title="'. get_the_title().'">
-                            <img src="'.$thumb_url[0].'" alt="'.get_the_title().'" class="img-responsive">
-
-                            '.$item_overlay['markup'].'  
-                        </a>
-                    </div>
-                    <!-- /Portfolio Item -->
-            ';
-        endwhile; else: 
-            $output.= __('No items found.','toranj');
-        endif;                     
-                    
-            $output .='
-            </div>
-            <!-- /Portfolio wrapper --> 
-        </div>
-        <!-- Page main content -->';
-
+        $output .= owlab_add_sharing(true);
+        
         wp_reset_query();
 
 
@@ -1637,7 +1576,7 @@ if (!defined('ABSPATH')) die('-1');
     
     /**
     * ----------------------------------------------------------------------------------------
-     * gallery_horizontal
+     * gallery_bootstrap_grid
      * ----------------------------------------------------------------------------------------
      *
      * @since 1.0.0
@@ -1698,11 +1637,11 @@ if (!defined('ABSPATH')) die('-1');
                 $output .='<div class="'.$class.'">';
                 if ( $lightbox == "yes"){
                     $output .= '<div class="img-container"><a href="'.$img_url.'" class="lightbox-gallery-item '.$item_overlay['parent_class'].'">
-                        <img src="'.$thumb_url[0].'" class="img-fit" alt="'.get_the_title().'">
+                        '.owlab_lazy_image($thumb_url, get_the_title(), false,'img-fit').'
                         '.$item_overlay['markup'].'
                     </a></div>';
                 }else{
-                    $output .= '<img src="'.$thumb_url[0].'" class="img-fit" alt="'.get_the_title().'">';
+                    $output .= owlab_lazy_image($thumb_url, get_the_title(), false,'img-fit');
                 }
                 $output .="</div>";
                 $counter++; 
@@ -1720,6 +1659,8 @@ if (!defined('ABSPATH')) die('-1');
 
         wp_reset_query();
 
+        //add sharing
+        $output .= owlab_add_sharing(true);
 
         return $output; 
         
@@ -1759,7 +1700,7 @@ if (!defined('ABSPATH')) die('-1');
         
         $loop = $this->_prepare_posts_loop('owlabgal',$limit,'owlabgal_album',$album);
 
-        
+
         $nosideClass='';
         if($hide_sidebar=="yes"){
             $nosideClass = " no-side";
@@ -1777,23 +1718,10 @@ if (!defined('ABSPATH')) die('-1');
             $remove_spaces_between_images = '';
         }
 
-        //if we have a album term passed try to get terms under that term
-        if (!empty ($album) ){
-            $term = get_term_by('slug', $album, 'owlabgal_album');
 
-            $arg = array('orderby' => 'count', 'parent' => $term->term_id );
-            $owlabgal_albums = get_terms( 'owlabgal_album', $arg );
-            //echo"<pre>";var_dump($owlabgal_albums);die();
-        }
-        else
-        {
-            //else grab all terms 
-            $owlabgal_albums = get_terms( 'owlabgal_album', 'orderby=count' );    
-        }
-
-        
-        
-
+        //get the terms
+        $owlabgal_albums = $this->_get_terms_by_term($album,'owlabgal_album');
+       
         if ( $hide_sidebar != "yes" ){
             $output .= '<!-- Page sidebar -->
                         <div class="page-side">
@@ -1812,13 +1740,15 @@ if (!defined('ABSPATH')) die('-1');
                                             <li class="active"><a href="#" data-filter="*">'.__('All','toranj').'</a></li>';
                                           
                                         foreach ($owlabgal_albums as $album):
+
+                                            $album = (array) $album;
                                             //what do we want?
                                             $count = '';
                                             if( $show_filter_count =="yes" ){
-                                                $count = ' -'.$album->count.'';
+                                                $count = ' -'.$album['count'].'';
                                             }
 
-                                            $output.='<li><a href="#" data-filter=".'.$album->slug.'">'.$album->name.$count.'</a></li>';
+                                            $output.='<li><a href="#" data-filter=".'.$album['slug'].'">'.$album['name'].$count.'</a></li>';
                                         endforeach; 
                               $output.='</ul>
                                     </div><!--/.grid-filter-wrapper-->';
@@ -1905,12 +1835,13 @@ if (!defined('ABSPATH')) die('-1');
                   
                 foreach ($owlabgal_albums as $album):
                     //what do we want?
+                    $album = (array) $album;
                     $count = '';
                     if( $show_filter_count =="yes" ){
-                        $count = ' -'.$album->count.'';
+                        $count = ' -'.$album['count'].'';
                     }
 
-                    $output.='<li><a href="#" data-filter=".'.$album->slug.'">'.$album->name.$count.'</a></li>';
+                    $output.='<li><a href="#" data-filter=".'.$album['slug'].'">'.$album['name'].$count.'</a></li>';
                 endforeach; 
       $output.='</ul>
             </div><!-- /Grid filter -->';
@@ -1923,6 +1854,9 @@ if (!defined('ABSPATH')) die('-1');
 
 
         wp_reset_query();
+
+        //add sharing
+        $output .= owlab_add_sharing(true);
 
 
         return $output;
@@ -2110,17 +2044,17 @@ if (!defined('ABSPATH')) die('-1');
                     if ( $add_socials == 'yes' ){
                         $output .= '<ul class="social-icons">';
                         if ( !empty ($facebook) )
-                            $output .= '<li><a href="#"><i class="fa fa-facebook"></i></a></li>';
+                            $output .= '<li><a href="'.$facebook.'"><i class="fa fa-facebook"></i></a></li>';
                         if ( !empty ($twitter) )
-                            $output .= '<li><a href="#"><i class="fa fa-twitter"></i></a></li>';
+                            $output .= '<li><a href="'.$twitter.'"><i class="fa fa-twitter"></i></a></li>';
                         if ( !empty ($linkedin) )
-                            $output .= '<li><a href="#"><i class="fa fa-linkedin"></i></a></li>';
+                            $output .= '<li><a href="'.$linkedin.'"><i class="fa fa-linkedin"></i></a></li>';
                         if ( !empty ($flicker) )
-                            $output .= '<li><a href="#"><i class="fa fa-flickr"></i></a></li>';
+                            $output .= '<li><a href="'.$flicker.'"><i class="fa fa-flickr"></i></a></li>';
                         if ( !empty ($instagram) )
-                            $output .= '<li><a href="#"><i class="fa fa-instagram"></i></a></li>';
+                            $output .= '<li><a href="'.$instagram.'"><i class="fa fa-instagram"></i></a></li>';
                         if ( !empty ($google) )
-                            $output .= '<li><a href="#"><i class="fa fa-google-plus"></i></a></li>';
+                            $output .= '<li><a href="'.$google.'"><i class="fa fa-google-plus"></i></a></li>';
                         $output .= '</ul><!-- /Team Item Social Icons-->';
                     }
                         
@@ -2164,7 +2098,7 @@ if (!defined('ABSPATH')) die('-1');
             'hide_sidebar'  => 'no',
             'title'         => '',
             'title2'        => '',
-            'layout_type'  => ''
+            'group_slugs'  => ''
         ), $atts));
         
         $output = "";
@@ -2173,12 +2107,12 @@ if (!defined('ABSPATH')) die('-1');
             'parent' => 0,
             'hierarchical' => 0
         );
-        $owlabpfl_groups = get_terms( array('owlabpfl_group'),$qargs);
+        $owlabpfl_groups =  $this->_get_terms_by_term($group_slugs,'owlabpfl_group'); //get_terms( array('owlabpfl_group'),$qargs);
         
         $i =0; //it starts from 0
         foreach ($owlabpfl_groups as $the_group) {
-            
-            $t_id = $the_group->term_id;
+            $the_group = (array) $the_group;
+            $t_id = $the_group['term_id'];
             $term_meta = get_option( "owlab_group_$t_id" );
             $owlabpfl_groups[$i] = (object) array_merge((array) $the_group, (array) $term_meta);
             $i++;
@@ -2236,7 +2170,7 @@ if (!defined('ABSPATH')) die('-1');
                     <!-- Portfolio Item -->     
                     <div class="gp-item tj-circle-hover">
                         <a href="'.$term_link.'" class="set-bg">';
-                    $output.=owlab_lazy_image($group->owlabpfl_group_image,$group->name,false);
+                    $output.=owlab_lazy_image(isset($group->owlabpfl_group_image)?$group->owlabpfl_group_image:false,$group->name,false);
                     $output .='<div class="tj-overlay">
                                 <div class="content">
                                     <div class="circle">
@@ -2286,6 +2220,7 @@ if (!defined('ABSPATH')) die('-1');
             'title2'        => '',
             'animate'       => 'no',
             'show_des'      => 'no',
+            'group_slugs'        =>''
         ), $atts));
         
         $animate_class = '';
@@ -2298,19 +2233,15 @@ if (!defined('ABSPATH')) die('-1');
 
         $output = "";
 
-        $qargs  = array(
-            'parent' => 0,
-            'hierarchical' => 0
-        );
-        $owlabpfl_groups = get_terms( array('owlabpfl_group'),$qargs);
+        $owlabpfl_groups = $this->_get_terms_by_term($group_slugs,'owlabpfl_group');
         
 
         $i =0; //it starts from 0
         foreach ($owlabpfl_groups as $the_group) {
-            
-            $t_id = $the_group->term_id;
+            $the_group = (Array)$the_group;
+            $t_id = $the_group['term_id'];
             $term_meta = get_option( "owlab_group_$t_id" );
-            $owlabpfl_groups[$i] = (object) array_merge((array) $the_group, (array) $term_meta);
+            $owlabpfl_groups[$i] = array_merge((array) $the_group, (array) $term_meta);
             $i++;
         }
 
@@ -2363,18 +2294,20 @@ if (!defined('ABSPATH')) die('-1');
             if ( $show_des == "yes" )
                 $des = '<h4 class="subtitle">'.$group->description.'</h4>';
 
-            $term_link = get_term_link( $group );
+            
+
+            $term_link = get_term_link( $group['slug'],'owlabpfl_group' );
 
             $output .='
                     <!-- Item -->     
                     <div class="vf-item tj-hover-3 set-bg '.$animate_class.'">
                         <a href="'.$term_link.'">';
-                        $output.=owlab_lazy_image($group->owlabpfl_group_image,$group->name,false);
-                
+                        $output.=owlab_lazy_image(isset($group['owlabpfl_group_image'])?$group['owlabpfl_group_image']:false,$group['name'],false);
+                        
                     $output .='<!-- Item Overlay -->    
                                 <div class="tj-overlay vcenter-wrapper">
                                     <div class="overlay-texts vcenter">
-                                        <h3 class="title">'.$group->name.'</h3>
+                                        <h3 class="title">'.$group['name'].'</h3>
                                         '.$des.'
                                     </div>
                                 </div>
@@ -2403,7 +2336,7 @@ if (!defined('ABSPATH')) die('-1');
 
     /**
     * ----------------------------------------------------------------------------------------
-     * portfolio_groups_horizontal
+     * gallery_albums_horizontal
      * ----------------------------------------------------------------------------------------
      *
      * @since 1.0.0
@@ -2417,110 +2350,326 @@ if (!defined('ABSPATH')) die('-1');
             'hide_sidebar'  => 'no',
             'title'         => '',
             'title2'        => '',
+            'album'         =>''
         ), $atts));
         
         $output = "";
 
-        $qargs  = array(
-            'parent' => 0,
-            'hierarchical' => 0
-        );
-        $owlabgal_albums = get_terms( array('owlabgal_album'),$qargs);
+       
+        $owlabgal_albums = $this->_get_terms_by_term($album,'owlabgal_album');
 
-        
         $i =0; //it starts from 0
         foreach ($owlabgal_albums as $the_term) {
-            
-            $t_id = $the_term->term_id;
+            $the_term = (Array) $the_term;
+            $t_id = $the_term['term_id'];
             $term_meta = get_option( "owlab_album_$t_id" );
-            $owlabgal_albums[$i] = (object) array_merge((array) $the_term, (array) $term_meta);
+            $owlabgal_albums[$i] = array_merge((array) $the_term, (array) $term_meta);
             $i++;
         }
 
-        //echo "<pre>"; var_dump($owlabgal_albums); die();
 
-        if ( $hide_sidebar != "yes" ){
-            $output = '<!-- Page sidebar -->
-            <div class="page-side">
-                <div class="inner-wrapper vcenter-wrapper">
-                    <div class="side-content vcenter">
 
-                        <!-- Page title -->
-                        <h1 class="title">
-                            <span class="second-part">'.esc_html( $title2 ).'</span>
-                            <span>'.esc_html( $title ).'</span>
-                        </h1>
-                        <!-- /Page title -->
-            ';
-            if ( isset($content) ){
-                $output .='
-                        <div class="hidden-sm hidden-xs">
-                            '.$content.'
-                        </div>
-                ';
-            }
-                $output .= '
-                    </div>
-                </div>
-            </div>
-            <!-- /Page sidebar -->
-            ';
-        }
+        $args = array(
+            'loop'          => $owlabgal_albums,
+            'hide_sidebar'  => $hide_sidebar,
+            'title2'        => $title2,
+            'title'         => $title,
+            'content'       => $content
+        );
+        $output = owlab_horizontalscroll_gallery($args,'array'); 
 
-        $nosideClass='';
-        if($hide_sidebar=="yes"){
-            $nosideClass = " no-side";
-        }
 
-        $output .='
-        <!-- Page main content -->
-        <div class="page-main horizontal-folio-wrapper set-height-mobile tj-lightbox-gallery'. $nosideClass .'">
-
-            <!-- Portfolio wrapper -->  
-            <div class="horizontal-folio">';
-                        
-        if ( !empty($owlabgal_albums) ) : foreach( $owlabgal_albums as $term ) :  
-            
-
-            $term_link = get_term_link( $term );
-
-            $output .='
-                    <!-- Portfolio Item -->     
-                    <div class="gp-item tj-circle-hover">
-                        <a href="'.$term_link.'" class="set-bg">';
-                        $output.=owlab_lazy_image(isset($term->owlabgal_album_image)?$term->owlabgal_album_image:false,$term->name,false);
-                
-                    $output .='<div class="tj-overlay">
-                                <div class="content">
-                                    <div class="circle">
-                                        <i class="fa fa-link"></i>
-                                    </div>
-                                    <div class="details">
-                                        <h4 class="title">'.$term->name.'</h4>
-                                    </div>  
-                                </div>
-                            </div>  
-                        </a>
-                    </div>
-                    <!-- /Portfolio Item -->
-            ';
-        endforeach; else: 
-            $output.= __('No items found.','toranj');
-        endif;                     
-                    
-            $output .='
-            </div>
-            <!-- /Portfolio wrapper --> 
-        </div>
-        <!-- Page main content -->';
 
         
 
+        
+        //add sharing
+        $output .= owlab_add_sharing(true);
 
         return $output; 
         
     }
 
+
+    /**
+    * ----------------------------------------------------------------------------------------
+     * helper function to get the terms by term
+     * ----------------------------------------------------------------------------------------
+     *
+     * @since 1.2.0
+     * @param      
+     * @return 
+     */
+    public function _get_terms_by_term($slugs,$taxonomy,$get_childs = false){
+
+
+        $terms = array();
+        //if we have a group term passed try to get terms under that term
+        if (!empty ($slugs) ){
+            
+            //turn the string of slugs into array
+            $terms_array = explode(',', $slugs);
+
+            
+            //loop through passed slugs
+            foreach ($terms_array as $g){
+
+                $g = trim($g);
+                // do nothing on nothing
+                if ( $g == '') continue;
+
+                // get extera info about term
+                $term = get_term_by('slug', $g, $taxonomy); //will return false if no such term
+
+                
+                if( $term ){
+
+
+                    $terms[] = (array) $term;
+
+                    if ( $get_childs ){
+                        //get the child terms of this term
+                        $args = array('orderby' => 'count', 'parent' => $term->term_id );
+
+                        $child_terms = get_terms( $taxonomy, $args );
+                        foreach ($child_terms as $child){
+                            $terms[] =  (array) $child;
+                        } 
+                    }
+                        
+                }
+            }
+        }
+        
+        //check if we have anything
+        if ( count($terms) == 0){
+            // get all the term of this taxonomy instead
+            $terms = get_terms( $taxonomy, 'orderby=count&hierarchical=0&parent=0' );
+            $terms = (array) $terms;
+        }
+
+        
+        return $terms;
+    }
+
+    /**
+    * ----------------------------------------------------------------------------------------
+     * portfolio_grid
+     * ----------------------------------------------------------------------------------------
+     *
+     * @since 1.2.0
+     * @param      
+     * @return 
+     */
+    public function render_portfolio_grid ($atts, $content = null) {
+        
+        
+        extract(shortcode_atts(array(
+            'hide_sidebar'  => 'no',
+            'title'         => '',
+            'title2'        => '',
+            'show_filter'   => 'no',
+            'show_filter_count' => 'no',
+            'overlay_type'  => '',
+            'filter_group'  => '',
+            'limit'         => '0',
+            'same_ratio_thumbs' => 'no',
+            'remove_spaces_between_images' => 'no',
+            'larg_screen_column_count' => '5',
+            'medium_screen_column_count' => '4',
+            'small_screen_column_count' => '2',
+            'xsmall_screen_column_count' => '1',
+            'use_ajax'      => 'no'
+        ), $atts));
+        
+        $output = "";
+
+        //this contains an string of camma separated slugs
+        $group=$filter_group;
+       
+        $loop = $this->_prepare_posts_loop('owlabpfl',$limit,'owlabpfl_group',$group);
+
+        
+        $nosideClass='';
+        if($hide_sidebar=="yes"){
+            $nosideClass = " no-side";
+        }
+
+        if ( $same_ratio_thumbs == "yes"){
+            $same_ratio_thumbs = " same-ratio-items";
+        }else{
+            $same_ratio_thumbs = '';
+        }
+
+        if($remove_spaces_between_images=='yes'){
+            $remove_spaces_between_images = " no-padding";
+        }else{
+            $remove_spaces_between_images = '';
+        }
+
+        $ajax_class = '';
+        if ( $use_ajax == 'yes'){
+            $ajax_class = 'ajax-portfolio normal';
+        }
+
+        //get the terms
+        $owlabpfl_groups = $this->_get_terms_by_term($group,'owlabpfl_group');
+
+        if ( $hide_sidebar != "yes" ){
+            $output .= '<!-- Page sidebar -->
+                        <div class="page-side">
+                            <div class="inner-wrapper vcenter-wrapper">
+                                <div class="side-content vcenter">
+
+                                    <!-- Page title -->
+                                    <h1 class="title">
+                                        <span class="second-part">'.esc_html( $title2 ).'</span>
+                                        <span>'.esc_html( $title ).'</span>
+                                    </h1><!-- /Page title -->';
+                                    if ( isset($content) ){
+                                        $output .= '<p>'.$content.'</p>';
+                                    }
+                          if( $show_filter == 'yes' && count($owlabpfl_groups) > 0 ): 
+                          $output.='<div class="grid-filters-wrapper">
+                                        <a href="#" class="select-filter"><i class="fa fa-filter"></i>'.ot_get_option('gallery_grid___filter_title').'</a>
+                                        <ul class="grid-filters">
+                                            <li class="active"><a href="#" data-filter="*">'.__('All','toranj').'</a></li>';
+                                          
+                                        foreach ($owlabpfl_groups as $group):
+
+                                            $group = (array) $group;
+                                            //what do we want? premium my baby!
+                                            $count = '';
+                                            if( $show_filter_count =="yes" ){
+                                                $count = ' -'.$group['count'].'';
+                                            }
+
+                                            $output.='<li><a href="#" data-filter=".'.$group['slug'].'">'.$group['name'].$count.'</a></li>';
+                                        endforeach; 
+                              $output.='</ul>
+                                    </div><!--/.grid-filter-wrapper-->';
+                           endif;//end show filter if                           
+                                    
+                    $output .= '</div><!-- /.side-content -->
+                            </div><!-- /.inner-wrapper -->
+                        </div><!-- /Page sidebar -->';
+        }
+
+        $output .= '
+        <!-- Page main content -->
+        <div class="page-main ajax-element'. $nosideClass .'">
+
+            <!-- Portfolio wrapper -->    
+            <div class="grid-portfolio '.$same_ratio_thumbs.$remove_spaces_between_images .'" lg-cols="'.intval($larg_screen_column_count).'" md-cols="'.intval($medium_screen_column_count).'" sm-cols="'.intval($small_screen_column_count).'" xs-cols="'.intval($xsmall_screen_column_count).'">
+            ';
+
+            $sizer_defined=0;
+            if ( $loop->have_posts() ) : while( $loop->have_posts() ) : $loop->the_post(); 
+            
+            $owlabpfl_meta = get_post_meta( $loop->post->ID );
+
+            $description = isset($owlabpfl_meta['owlabpfl_short_des']) ? $owlabpfl_meta['owlabpfl_short_des'][0] : '';
+            $item_overlay = owlab_get_portfolio_overlay($overlay_type,get_the_title(),$description);
+            
+            //get the terms of each photo
+            $the_terms = wp_get_post_terms( $loop->post->ID, 'owlabpfl_group', array('fileds' => 'all') ); 
+            
+            $this_terms =array();
+            if (is_array($the_terms)){
+                foreach($the_terms as $term){
+                    $this_terms[]= $term->slug;
+                }
+            }
+            $group_terms = implode(' ', $this_terms);
+
+            $thumb_url = wp_get_attachment_image_src( get_post_thumbnail_id($loop->post->ID), 'blog-thumb' );
+                    // [0] => url
+                    // [1] => width
+                    // [2] => height
+            $img_url = wp_get_attachment_url( get_post_thumbnail_id($loop->post->ID) );
+
+
+            $ratio ='';
+            if (!empty($owlabpfl_meta['owlabpfl_grid_ratio'][0])){
+                $ratio.= ' data-width-ratio="'. intval($owlabpfl_meta['owlabpfl_grid_ratio'][0]).'"';
+            }
+
+            
+            $sizer='';
+             if ( array_key_exists('owlabpfl_grid_sizer', $owlabpfl_meta) && $sizer_defined !=1 ){
+                $sizer_defined == 1;
+                $sizer=" grid-sizer";
+            }
+            
+            $output .='
+                
+                <!-- Gallery Item -->       
+                <div class="gp-item '.$item_overlay['parent_class'].' '.$group_terms.$sizer.'"'.$ratio.'> 
+                    <a href="'.get_the_permalink().'"  class="'.$ajax_class.'" title="'.get_the_title().'">
+                        
+                        '.owlab_lazy_image($thumb_url, get_the_title(), false).'
+                        
+                        <!-- Item Overlay -->   
+                        '.$item_overlay['markup'].'
+                        <!-- /Item Overlay -->  
+                    </a>
+                </div>
+                <!-- /Gallery Item -->';
+
+        endwhile; else: 
+            $output.= __('No items found.','toranj');
+        endif;
+            $output .='
+            </div>
+            <!-- /Gallery wrapper -->';   
+            
+            if( $hide_sidebar == "yes" && $show_filter == "yes" && count($owlabpfl_groups) > 0): 
+            $output.='<div class="fixed-filter">
+                <a href="#" class="select-filter"><i class="fa fa-filter"></i>'.ot_get_option('gallery_grid___filter_title').'</a>
+                <ul class="grid-filters">
+                    <li class="active"><a href="#" data-filter="*">'.__('All','toranj').'</a></li>';
+                  
+                foreach ($owlabpfl_groups as $group):
+                    //what do we want?
+                    $count = '';
+                    if( $show_filter_count =="yes" ){
+                        $count = ' -'.$group->count.'';
+                    }
+
+                    $output.='<li><a href="#" data-filter=".'.$group->slug.'">'.$group->name.$count.'</a></li>';
+                endforeach; 
+      $output.='</ul>
+            </div><!-- /Grid filter -->';
+            endif; //end show filter 
+                
+        $output.='</div>
+        <!-- /Page main content -->
+        <!--Ajax folio-->
+        <div id="ajax-folio-loader">
+            <!-- loading css3 -->
+            <div id="followingBallsG">
+                <div id="followingBallsG_1" class="followingBallsG">
+                </div>
+                <div id="followingBallsG_2" class="followingBallsG">
+                </div>
+                <div id="followingBallsG_3" class="followingBallsG">
+                </div>
+                <div id="followingBallsG_4" class="followingBallsG">
+                </div>
+            </div>
+        </div>
+        <div id="ajax-folio-item"></div>
+        <!--Ajax folio-->
+        ';
+
+
+
+
+        wp_reset_query();
+
+
+        return $output;
+    }
 
     /**
     * ----------------------------------------------------------------------------------------
@@ -2540,6 +2689,7 @@ if (!defined('ABSPATH')) die('-1');
             'title2'        => '',
             'animate'       => 'no',
             'show_des'      => 'no',
+            'album'         => ''
         ), $atts));
         
         $animate_class = '';
@@ -2552,15 +2702,15 @@ if (!defined('ABSPATH')) die('-1');
             'parent' => 0,
             'hierarchical' => 0
         );
-        $owlabgal_albums = get_terms( array('owlabgal_album'),$qargs);
-        
 
+        $owlabgal_albums=$this->_get_terms_by_term($album,'owlabgal_album');
+        
         $i =0; //it starts from 0
         foreach ($owlabgal_albums as $the_term) {
-            
-            $t_id = $the_term->term_id;
+            $the_term = (Array) $the_term;        
+            $t_id = $the_term['term_id'];
             $term_meta = get_option( "owlab_album_$t_id" );
-            $owlabgal_albums[$i] = (object) array_merge((array) $the_term, (array) $term_meta);
+            $owlabgal_albums[$i] =  array_merge((array) $the_term, (array) $term_meta);
             $i++;
         }
 
@@ -2608,23 +2758,24 @@ if (!defined('ABSPATH')) die('-1');
                         
         if ( !empty($owlabgal_albums) ) : foreach( $owlabgal_albums as $term ) :  
             
+            $term = (Array) $term;
 
             $des = '';
             if ( $show_des == "yes" )
-                $des = '<h4 class="subtitle">'.$term->description.'</h4>';
+                $des = '<h4 class="subtitle">'.wpautop( $term['description'] ).'</h4>';
 
-            $term_link = get_term_link( $term );
+            $term_link = get_term_link( $term['slug'],'owlabgal_album' );
 
             $output .='
                     <!-- Item -->     
                     <div class="vf-item tj-hover-3 set-bg '.$animate_class.'">
                         <a href="'.$term_link.'">';
-                    $output.=owlab_lazy_image(isset($term->owlabgal_album_image)?$term->owlabgal_album_image:false,$term->name,false);     
+                    $output.=owlab_lazy_image(isset($term['owlabgal_album_image'])?$term['owlabgal_album_image']:false,$term['name'],false);     
                 
                     $output .='<!-- Item Overlay -->    
                                 <div class="tj-overlay vcenter-wrapper">
                                     <div class="overlay-texts vcenter">
-                                        <h3 class="title">'.$term->name.'</h3>
+                                        <h3 class="title">'.$term['name'].'</h3>
                                         '.$des.'
                                     </div>
                                 </div>
@@ -2644,12 +2795,86 @@ if (!defined('ABSPATH')) die('-1');
         <!-- Page main content -->';
 
         
-
+        //add sharing
+        $output .= owlab_add_sharing(true);
 
         return $output; 
         
     }
 
+    /**
+    * ----------------------------------------------------------------------------------------
+     * video_background
+     * ----------------------------------------------------------------------------------------
+     *
+     * @since 1.2.0
+     * @param      
+     * @return 
+     */
+    public function render_video_background($atts){
+        extract(shortcode_atts(array(
+            'image'         => '',
+            'mp4'           => '',
+            'webm'          => '',
+            'ogv'           => '',
+            'play_mode'     => 'hoverPlay', //autoplay
+            'mute_off'      => 'no',
+            'el_class'      => '',
+            'link'          => '',
+            'caption'       => '',
+        ), $atts));
+
+        $output='';
+        $image_attributes = wp_get_attachment_image_src( $image , 'full' ); // returns an array
+        $mute_off = $mute_off == 'no'? ' muted' : ' unmuted';
+        $dark_overlay = $dark_overlay == 'no'? '' : ' dark-overlay';
+
+        $target = $href = "";
+        $url = vc_build_link($link);
+        if ($url){
+            $target = isset($url['target'])?$url['target']:'';
+            $href = isset($url['url'])?$url['url']:'';  
+        }
+
+        if ( $mp4 != ''){
+
+            $output .= '<div class="img-container vc-video_background">';
+
+            if ( $href != ''){
+                $output.= '<a href="'.$href.'" target="'.$target.'">';
+            }else{
+                $output .= '<a href="'.esc_url( $mp4 ).'" class="videobg-fallback">';
+            }
+
+            $output.='<div class="owl-videobg '.$play_mode.$dark_overlay.$mute_off.'"';
+            $output .=  ' data-poster="'.$image_attributes[0].'"'; 
+            $output .=  ' data-src="'.esc_url( $mp4 ).'"';
+            
+            if ( $webm != '')
+                $output .=  ' data-src-webm="'.esc_url( $webm ).'"';
+            if ( $ogv != '')
+                $output .=  ' data-src-ogg="'.esc_url( $ogv ).'"';
+            $output .=  '></div><!--/owl-videobg-->';
+
+            if ( $caption != '' ){
+                $output .='<div class="caption cap-bordered cap-compact cap-bottom cap-left">
+                                <h2 class="cap-title allcaps">
+                                    '.$caption.' 
+                                </h2>
+                            </div>';
+            }
+
+            $output .='</a>';
+            $output .='</div><!--/img-container-->';
+
+
+        }else{
+            $output .= '<div class="img-container"><img src="'.$image_attributes[0].'" class="img-fit" alt=""></div>';
+        }
+
+        
+        return $output; 
+    }
 
     
 }
@@ -2674,7 +2899,7 @@ $shortcodes = array(
         "base" => "toranj_portfolio_groups_vertical",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/portfolio.png',
         "category" => __('Portfolio', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -2716,6 +2941,13 @@ $shortcodes = array(
                 "heading"   => __("Show Group descriptions?", "toranj"),
                 "param_name"=> "show_des",
                 "value"     => array(__("Yes, Please",'toranj') => 'yes') 
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Group Slug", "toranj"),
+                "value"         => '',
+                "param_name"    => "group_slugs",
+                'description'   => __('If you want to restrict to specific groups then input the <code>slug</code> of the Groups. Can be seperated with comma <code>album1,album2,...</code>','toranj') 
             )
         )
     ),
@@ -2727,7 +2959,7 @@ $shortcodes = array(
         "base" => "toranj_portfolio_groups_horizontal",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/portfolio.png',
         "category" => __('Portfolio', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -2757,9 +2989,143 @@ $shortcodes = array(
                 "type"      => "textarea_html",
                 "heading"   => __("Description", "toranj"),
                 "param_name"    => "content"
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Group Slug", "toranj"),
+                "value"         => '',
+                "param_name"    => "group_slugs",
+                'description'   => __('If you want to restrict to specific groups then input the <code>slug</code> of the Groups. Can be seperated with comma <code>album1,album2,...</code>','toranj') 
             )
         )
     ),
+    'portfolio_grid' => array(
+        "name" => __("Portfolio Grid", 'toranj'),
+        "description" => __("Make a grid of portfolios", 'toranj'),
+        "base" => "toranj_portfolio_grid",
+        "class" => "",
+        "controls" => "full",
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/portfolio.png',
+        "category" => __('Portfolio', 'toranj'),
+        //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
+        //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
+        "params" => array(
+            array(
+                "type"          => "checkbox",
+                "heading"       => __("Hide sidebar?", "toranj"),
+                "param_name"    => "hide_sidebar",
+                "value"         => array(__("Yes, Please",'toranj') => 'yes')
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Side Title", "toranj"),
+                "param_name"    => "title",
+                "value"         => __("Portfolio", "toranj"),
+                "holder"        => "div"
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Side upper-Title", "toranj"),
+                "param_name"    => "title2",
+                "value"         => __("Browse our", "toranj"),
+                "description"   => __("You can leave this blank", "toranj")
+                
+            ),
+            array(
+                "type"      => "textarea_html",
+                "heading"   => __("Description", "toranj"),
+                "param_name"    => "content",
+                "value"     => ""
+            ),
+            array(
+                "type"          => "checkbox",
+                "heading"       => __("Show filter?", "toranj"),
+                "description"   => __("Displays group filter (if any)",'toranj'),
+                "param_name"    => "show_filter",
+                "value"         => array(__("Yes, Please",'toranj') => 'yes')
+            ),
+            array(
+                "type"          => "checkbox",
+                "heading"       => __("Show filter count?", "toranj"),
+                "description"   => __("Displays count items in front of each filter?",'toranj'),
+                "param_name"    => "show_filter_count",
+                "value"         => array(__("Yes, Please",'toranj') => 'yes')
+            ),
+            array(
+                "type"          => "dropdown",
+                "heading"       => __("Hover style", "toranj"),
+                "param_name"        => "overlay_type",
+                "value"             => array(
+                                        __('Style #1', "toranj")     => "tj-hover-1",
+                                        __('Style #2', "toranj")     => "tj-hover-2",
+                                    ),
+                "description" => __("Select hover style", "toranj")
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Group Slug", "toranj"),
+                "param_name"    => "filter_group",
+                'description'   => __('If you want to restrict to a group then input the <code>slug</code> of the group. Can be seperated with comma <code>group1,group2,...</code>','toranj') 
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Number of items", "toranj"),
+                "param_name"    => "limit",
+                'description'   => __('Limit the number of items, set to 0 to get all','toranj'),
+                "value"         => "0" 
+            ),
+            array(
+                "type"          => "checkbox",
+                "heading"       => __("Same ratio Images?", "toranj"),
+                "description"   => __("If all your thumbnails are at the same ratio check yes, for example if you want all your thumbs to be at the same size, or even if you have two different same ratio images. If you want to use images with variable heightes leave this blank.",'toranj'),
+                "param_name"    => "same_ratio_thumbs",
+                "value"         => array(__("Yes, Please",'toranj') => 'yes')
+            ),
+            array(
+                "type"          => "checkbox",
+                "heading"       => __("Remove item's padding?", "toranj"),
+                "description"   => __("Remove padding between images?",'toranj'),
+                "param_name"    => "remove_spaces_between_images",
+                "value"         => array(__("Yes, Please",'toranj') => 'yes')
+            ),
+            array(
+                "type"          => "checkbox",
+                "heading"       => __("Use ajax loading?", "toranj"),
+                "description"   => __("check this just in case you want to use the fullwidth page templates and you just want to use this shortcode at your page. Else you will see odd things appear at your page upon navigating to portfolio items.",'toranj'),
+                "param_name"    => "use_ajax",
+                "value"         => array(__("Yes, Please",'toranj') => 'yes')
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("LG column count", "toranj"),
+                "param_name"    => "larg_screen_column_count",
+                'description'   => __('<code>Integer value</code>. Number of cols for large screen devices','toranj'),
+                "value"         => "4" 
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("MD column count", "toranj"),
+                "param_name"    => "medium_screen_column_count",
+                'description'   => __('<code>Integer value</code>. Number of cols for medium screen devices','toranj'),
+                "value"         => "3" 
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("SM column count", "toranj"),
+                "param_name"    => "small_screen_column_count",
+                'description'   => __('<code>Integer value</code>. Number of cols for small devices','toranj'),
+                "value"         => "2" 
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("XS column count", "toranj"),
+                "param_name"    => "small_screen_column_count",
+                'description'   => __('<code>Integer value</code>. Number of cols for extra small devices','toranj'),
+                "value"         => "2" 
+            ),
+        )
+    ),
+
 
     /*----------------------------------------------------------------------------
     *   Gallery shortcodes
@@ -2771,7 +3137,7 @@ $shortcodes = array(
         "base" => "toranj_gallery_grid",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/gallery.png',
         "category" => __('Gallery', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -2834,7 +3200,7 @@ $shortcodes = array(
                 "type"          => "textfield",
                 "heading"       => __("Albm Slug", "toranj"),
                 "param_name"    => "album",
-                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album.','toranj') 
+                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album. Can be seperated with comma <code>album1,album2,...</code>','toranj') 
             ),
             array(
                 "type"          => "textfield",
@@ -2894,7 +3260,7 @@ $shortcodes = array(
         "base" => "toranj_gallery_horizontal",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/gallery.png',
         "category" => __('Gallery', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -2941,9 +3307,9 @@ $shortcodes = array(
             ),
             array(
                 "type"          => "textfield",
-                "heading"       => __("Albm Slug", "toranj"),
+                "heading"       => __("Album Slug", "toranj"),
                 "param_name"    => "album",
-                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album.','toranj') 
+                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album. Can be seperated with comma <code>album1,album2,...</code>','toranj') 
             ),
             array(
                 "type"          => "textfield",
@@ -2952,6 +3318,35 @@ $shortcodes = array(
                 'description'   => __('Limit the number of photos, set to 0 to get all','toranj'),
                 "value"         => "0" 
             ),
+            array(
+                "type"          => "dropdown",
+                "heading"       => __("Items width mode", "toranj"),
+                "param_name"    => "width_mode",
+                "value"         => array(
+                                    __('Fixed Width', "toranj")     => "fixed_width",
+                                    __('Width of image', "toranj")  => "image_width"
+                                ),
+                "description"   => __("If you set this to image width items can have different width related to the image ratio", "toranj")
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Item Width in px", "toranj"),
+                "param_name"    => "default_width",
+                'description'   => __('Width of each item in fixed width mode','toranj'),
+                "value"         => "350",
+                "dependency"    => array('element' => "width_mode", 'value' => array('fixed_width'))
+            ),
+            array(
+                "type"          => "dropdown",
+                "heading"       => __("Fill mode", "toranj"),
+                "param_name"    => "fill_mode",
+                "value"         => array(
+                                    __('Cover', "toranj")     => "fill_cover",
+                                    __('Fit', "toranj")  => "fill_fit"
+                                ),
+                "description"   => __("Image fill mode", "toranj"),
+                "dependency"    => array('element' => "width_mode", 'value' => array('fixed_width'))
+            )
         )
     ),
     
@@ -2961,7 +3356,7 @@ $shortcodes = array(
         "base" => "toranj_gallery_bootstrap_grid",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/gallery.png',
         "category" => __('Gallery', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3008,7 +3403,7 @@ $shortcodes = array(
                 "type"          => "textfield",
                 "heading"       => __("Albm Slug", "toranj"),
                 "param_name"    => "album",
-                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album.','toranj'),
+                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album. Can be seperated with comma <code>album1,album2,...</code>','toranj'),
                 "dependency"        => Array('element' => "type", 'value' => array('album'))
             ),
             array(
@@ -3037,7 +3432,7 @@ $shortcodes = array(
         "base" => "toranj_gallery_albums_vertical",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/gallery.png',
         "category" => __('Gallery', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3067,6 +3462,12 @@ $shortcodes = array(
                 "type"      => "textarea_html",
                 "heading"   => __("Description", "toranj"),
                 "param_name"    => "content"
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Album Slug", "toranj"),
+                "param_name"    => "album",
+                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album. Can be seperated with comma <code>album1,album2,...</code>','toranj') 
             ),
             array(
                 "type"      => "checkbox",
@@ -3090,7 +3491,7 @@ $shortcodes = array(
         "base" => "toranj_gallery_albums_horizontal",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/gallery.png',
         "category" => __('Gallery', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3120,6 +3521,12 @@ $shortcodes = array(
                 "type"      => "textarea_html",
                 "heading"   => __("Description", "toranj"),
                 "param_name"    => "content"
+            ),
+            array(
+                "type"          => "textfield",
+                "heading"       => __("Album Slug", "toranj"),
+                "param_name"    => "album",
+                'description'   => __('If you want to restrict to an album then input the <code>slug</code> of the Album. Can be seperated with comma <code>album1,album2,...</code>','toranj') 
             )
         )
     ),
@@ -3135,7 +3542,7 @@ $shortcodes = array(
         "base" 			=> "toranj_title",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/title.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3178,7 +3585,10 @@ $shortcodes = array(
 										'h5' => "h5",
 									),
 				"description" => __("Select heading size", "toranj"),
-                
+                "dependency" => array(
+                    'element' => 'style',
+                    'value' => array( "underlined","lined","bordered" )
+                )
 			),
             array(
               "type" => "textfield",
@@ -3195,7 +3605,7 @@ $shortcodes = array(
         "base" => "toranj_button",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/button.png',
         "category" => __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3257,7 +3667,12 @@ $shortcodes = array(
 									),
 				"description" => __("align icon with text", "toranj")
 			),
-			
+			array(
+              "type" => "textfield",
+              "heading" => __("Extra class name", "toranj"),
+              "param_name" => "el_class",
+              "description" => __("If you wish to style particular content element differently, then use this field to add a class name and then refer to it in your css file.", "toranj")
+            )
 
         )
 	),
@@ -3267,7 +3682,7 @@ $shortcodes = array(
 		"base" 			=> "toranj_single_icon",
 		"category" 		=> __('TORANJ', 'toranj'),
 		"description" 	=> __('Simple fontawesome icon', 'toranj'),
-		"icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+		"icon" 			=> get_template_directory_uri().'/assets/img/vcicons/flag.png',
 		"params" 		=> array(
 				array(
 					"type" 		=> "textfield",
@@ -3319,7 +3734,7 @@ $shortcodes = array(
         "base" 			=> "toranj_iconbox",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/icon-box.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3366,7 +3781,7 @@ $shortcodes = array(
         "base" => "toranj_CallToAction",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/action.png',
         "category" => __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3409,7 +3824,7 @@ $shortcodes = array(
         "base" => "toranj_image_hover",
         "class" => "",
         "controls" => "full",
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/image.png',
         "category" => __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3480,7 +3895,7 @@ $shortcodes = array(
 		"as_parent" => array('only' => 'toranj_services_single'),
 		"content_element" => true,
 		"show_settings_on_create" => false,
-		"icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+		"icon" => get_template_directory_uri().'/assets/img/vcicons/services.png',
 		"category" => __('TORANJ', 'toranj'),
 		"js_view" => 'VcColumnView',
 		"params" => array(
@@ -3509,7 +3924,7 @@ $shortcodes = array(
         "class" => "",
         "controls" => "full",
         "as_child" => array('only' => 'toranj_services_container'),
-        "icon" => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" => get_template_directory_uri().'/assets/img/vcicons/services.png',
         "category" => __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3543,7 +3958,7 @@ $shortcodes = array(
         "base" 			=> "toranj_skillbar",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/skills.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3572,7 +3987,7 @@ $shortcodes = array(
         "base" 			=> "toranj_personnel",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/personnel.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3640,7 +4055,7 @@ $shortcodes = array(
         "base" 			=> "toranj_announce_box",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/announce.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3663,7 +4078,7 @@ $shortcodes = array(
         "base" 			=> "toranj_list_container",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/list.png',
         "category" 		=> __('TORANJ', 'toranj'),
         "as_parent" => array('only' => 'toranj_list_item'),
 		"content_element" => true,
@@ -3734,7 +4149,7 @@ $shortcodes = array(
         "base" 			=> "toranj_list_item",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/list.png',
         "category" 		=> __('TORANJ', 'toranj'),
         "as_child" => array('only' => 'toranj_list_container'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
@@ -3775,7 +4190,7 @@ $shortcodes = array(
         "base" 			=> "toranj_single_ligtbox",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/lightbox.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3833,7 +4248,7 @@ $shortcodes = array(
         "base" 			=> "toranj_gallery_light_box_single",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/lightbox.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3936,7 +4351,7 @@ $shortcodes = array(
         "base" 			=> "toranj_html5_video",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/video.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -3974,7 +4389,7 @@ $shortcodes = array(
         "base" 			=> "toranj_caption",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/caption.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -4150,7 +4565,7 @@ $shortcodes = array(
                 "holder"    => "img",
                 'dependency' => array(
                     'element' => 'media_type',
-                    'value' => array( 'image' )
+                    'value' => array( 'image','video' )
                 )
 			),
             array(
@@ -4160,8 +4575,9 @@ $shortcodes = array(
                 'description' => __( 'Enter image size. Example: thumbnail, medium, large, full or other sizes defined by current theme. Alternatively enter image size in pixels: 200x100 (Width x Height). Leave empty to use "thumbnail" size.', 'toranj' ),
                 'dependency' => array(
                     'element' => 'media_type',
-                    'value' => array( 'image' )
-                )
+                    'value' => array( 'image','video' )
+                ),
+                'value' => 'full'
             ),
 
 			array(
@@ -4221,7 +4637,7 @@ $shortcodes = array(
         "base" 			=> "toranj_compare_image",
         "class" 		=> "",
         "controls" 		=> "full",
-        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "icon" 			=> get_template_directory_uri().'/assets/img/vcicons/compare.png',
         "category" 		=> __('TORANJ', 'toranj'),
         //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
         //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -4309,7 +4725,7 @@ $shortcodes = array(
 
             array(
                 "type"        => "checkbox",//http://kb.wpbakery.com/index.php?title=Mapping_Params
-                "heading"     => __("Enable mouse swip navigation?", "toranj"),
+                "heading"     => __("Enable mouse wheel navigation?", "toranj"),
                 "param_name"  => "mouse",
                 "value"       => array(
                       __('No, thanks', 'toranj') => 'no'
@@ -4349,7 +4765,7 @@ $shortcodes = array(
             ),
             array(
                 "type"        => "dropdown",//http://kb.wpbakery.com/index.php?title=Mapping_Params
-                "heading"     => __("Howo to center the bullets?", "toranj"),
+                "heading"     => __("Carousel pager position", "toranj"),
                 "param_name"  => "bulletcenter",
                 "value"       => array(
                       __('vertical', 'toranj') => 'vertical',
@@ -4531,6 +4947,83 @@ $shortcodes = array(
 
         )
     ),
+
+    'video_background' =>  array(
+        "name"          => __("Video background", 'toranj'),
+        "description"   => __("Add Self hosted video", 'toranj'),
+        "base"          => "toranj_video_background",
+        "class"         => "",
+        "controls"      => "full",
+        "icon"          => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+        "category"      => __('TORANJ', 'toranj'),
+        "params"        => array(
+            
+            array(
+                "type"      => "attach_image",
+                "heading"   => __("Image cover", "toranj"),
+                "param_name"    => "image",
+                "description"  => __('No mater what, I need an Image it is required','toranj'),
+                "holder"    => "img"
+            ),
+            array(
+                "type"      => "textfield",
+                "heading"   => __("MP4 URL", "toranj"),
+                "param_name"    => "mp4",
+                "description" => __("Get the address from your media section or your external repository.", "toranj")
+            ),
+            array(
+                "type"      => "textfield",
+                "heading"   => __("webm URL", "toranj"),
+                "param_name"    => "webm",
+                "description" => __("the <code>.webm</code> file. Get the address from your media section or your external repository.", "toranj")
+            ),
+            array(
+                "type"      => "textfield",
+                "heading"   => __("ogv URL", "toranj"),
+                "param_name"    => "ogv",
+                "description" => __("the <code>.ogv</code> file. Get the address from your media section or your external repository.", "toranj")
+            ),
+            array(
+                "type"          => "vc_link",
+                "heading"       => __("Link", "toranj"),
+                "param_name"    => "link",
+                'description'   => __('link the video','toranj')
+            ),
+            array(
+                "type"          => "dropdown",
+                "heading"       => __("Play Mode", "toranj"),
+                "param_name"        => "play_mode",
+                "value"             => array(
+                                        __('Hover Play', "toranj")     => "hoverPlay",
+                                        __('Auto Play', "toranj")      => "autoplay",
+                                    )
+            ),
+            array(
+                "type"      => "textfield",
+                "heading"   => __("Caption text", "toranj"),
+                "param_name"    => "caption",
+            ),
+
+
+
+
+
+            array(
+                "type"          => "checkbox",
+                "heading"       => __("Turn off mute mode?", "toranj"),
+                "param_name"    => "mute_off",
+                "value"         => array(__('Yes, please','toranj') => "yes"),
+            ),
+
+            array(
+              "type" => "textfield",
+              "heading" => __("Extra class name", "toranj"),
+              "param_name" => "el_class",
+              "description" => __("If you wish to style particular content element differently, then use this field to add a class name and then refer to it in your css file.", "toranj")
+            )  
+
+        )
+    ),
 );
 
 /**
@@ -4551,7 +5044,33 @@ if ( defined( 'WPB_VC_VERSION' ) ) {
     }
 
     class WPBakeryShortCode_toranj_double_carousel_container extends WPBakeryShortCodesContainer {}
+
+    
 }
+
+/**
+ * ----------------------------------------------------------------------------------------
+ * add parameters to elements
+ * ----------------------------------------------------------------------------------------
+ */
+if ( defined( 'WPB_VC_VERSION' ) ) {
+    
+    vc_add_param('vc_row',array(
+        'type' => 'dropdown',
+        'class' => '',
+        'heading' => __('Content width','toranj'),
+        'param_name' => 'row_content_width',
+        'value' => array(
+            __('Fullwidth','toranj') => 'fullwidth',
+            __('Contained','toranj') => 'contained'
+        ),
+        'description' => __('This option only works at <code>fullwidth</code> page templates','toranj')
+
+    ));
+
+
+}
+
 
 /**
  * ----------------------------------------------------------------------------------------
@@ -4568,30 +5087,33 @@ new Owlab_vc_extend($shortcodes);
  * ----------------------------------------------------------------------------------------
  */
 if ( defined( 'WPB_VC_VERSION' ) ) {
-    add_action( 'vc_before_init', 'kenburnslider_integrateWithVC' );
-    function kenburnslider_integrateWithVC(){
-        vc_map(
-            array(
-                "name"          => __("Kenburen Slider", 'toranj'),
-                "base"          => "owlabkbs",
-                "class"         => "",
-                "controls"      => "full",
-                "icon"          => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
-                "category"      => __('TORANJ', 'toranj'),
-                //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
-                //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
-                "params"        => array(
-                    array(
-                        "type"      => "textfield",
-                        "heading"   => __("Slider ID", "toranj"),
-                        "param_name"    => "id",
-                        "admin_label"    =>true,
-                        "description"   =>__("Input the numeric id of the slider","toranj")
-                    ),
-                    
-                ),          
-            )
-        );
+
+    if (class_exists('Owlabkbs')) {
+        add_action( 'vc_before_init', 'kenburnslider_integrateWithVC' );
+        function kenburnslider_integrateWithVC(){
+            vc_map(
+                array(
+                    "name"          => __("Kenburen Slider", 'toranj'),
+                    "base"          => "owlabkbs",
+                    "class"         => "",
+                    "controls"      => "full",
+                    "icon"          => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+                    "category"      => __('TORANJ', 'toranj'),
+                    //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
+                    //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
+                    "params"        => array(
+                        array(
+                            "type"      => "textfield",
+                            "heading"   => __("Slider ID", "toranj"),
+                            "param_name"    => "id",
+                            "admin_label"    =>true,
+                            "description"   =>__("Input the numeric id of the slider","toranj")
+                        ),
+                        
+                    ),          
+                )
+            );
+        }
     }
 
     add_action( 'vc_before_init', 'dropcap_integrateWithVC' );
@@ -4602,7 +5124,7 @@ if ( defined( 'WPB_VC_VERSION' ) ) {
                 "base"          => "owlab_dropcap",
                 "class"         => "",
                 "controls"      => "full",
-                "icon"          => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+                "icon"          => get_template_directory_uri().'/assets/img/vcicons/dropcap.png',
                 "category"      => __('TORANJ', 'toranj'),
                 //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
                 //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
@@ -4646,6 +5168,168 @@ if ( defined( 'WPB_VC_VERSION' ) ) {
                 ),          
             )
         );
+    }
+
+    if ( class_exists('Owlabbulkg') ) 
+    {
+
+        add_action( 'vc_before_init', 'owlabbulkg_Slider_Shortcode_integrateWithVC' );
+        function owlabbulkg_Slider_Shortcode_integrateWithVC(){
+            vc_map(
+                array(
+                    "name"          => __("Bulk gallery Slider", 'toranj'),
+                    "description"   => __("Add simple slider from bulk gallery images", 'toranj'),
+                    "base"          => "bulkgal_slider",
+                    "class"         => "",
+                    "controls"      => "full",
+                    "icon"          => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+                    "category"      => __('BULK GALLERY', 'toranj'),
+                    //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
+                    //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
+                    "params"        => array(
+                        array(
+                            "type"      => "textfield",
+                            "heading"   => __("Gallery ID", "toranj"),
+                            "param_name"    => "galleryid",
+                            "admin_label"    =>true,
+                            "description"   =>__("Input the numeric id of the bulk gallery, get it from Bulk Gallery at menu","toranj")
+                        ),
+                        array(
+                            "type"      => "checkbox",
+                            "heading"   => __("Use Cropped images?", "toranj"),
+                            "param_name"=> "crop",
+                            "value"     => array(__("Yes, Please",'toranj') => 'yes') 
+                        ),
+                        array(
+                            "type"      => "checkbox",
+                            "heading"   => __("Auto play?", "toranj"),
+                            "param_name"=> "auto",
+                            "value"     => array(__("No, Thanks",'toranj') => 'no') 
+                        ),
+                        array(
+                            "type"      => "textfield",
+                            "heading"   => __("Transition speed", "toranj"),
+                            "param_name"    => "speed",
+                            "description"   =>__("input a number default is 500","toranj"),
+                            "value"         => 500
+                        ),
+                        array(
+                            "type"      => "textfield",
+                            "heading"   => __("Transition timeout", "toranj"),
+                            "param_name"    => "timeout",
+                            "description"   =>__("input a number default is 4000","toranj"),
+                            "value"         => 4000
+                        ),
+                        array(
+                            "type"      => "checkbox",
+                            "heading"   => __("Display pager bullets?", "toranj"),
+                            "param_name"=> "pager",
+                            "value"     => array(__("Yes, Please",'toranj') => 'yes') 
+                        ),
+                        array(
+                            "type"      => "checkbox",
+                            "heading"   => __("Remove Navigation arrows?", "toranj"),
+                            "param_name"=> "nav",
+                            "value"     => array(__("Yes, please",'toranj') => 'no') 
+                        ),
+                        array(
+                            "type"      => "checkbox",
+                            "heading"   => __("Randomize images?", "toranj"),
+                            "param_name"=> "random",
+                            "value"     => array(__("Yes, Please",'toranj') => 'yes') 
+                        ),
+                        array(
+                            "type"      => "checkbox",
+                            "heading"   => __("Pause on Hover?", "toranj"),
+                            "param_name"=> "pause",
+                            "value"     => array(__("Yes, Please",'toranj') => 'yes') 
+                        ),
+                    ),          
+                )
+            );
+        }
+
+
+        add_action( 'vc_before_init', 'owlabbulkg_grid_Shortcode_integrateWithVC' );
+        function owlabbulkg_grid_Shortcode_integrateWithVC(){
+            vc_map(
+                array(
+                    "name"          => __("Bulk gallery Grid", 'toranj'),
+                    "description"   => __("Add a gallery to a page in grid style", 'toranj'),
+                    "base"          => "bulkgal_grid",
+                    "class"         => "",
+                    "controls"      => "full",
+                    "icon"          => get_template_directory_uri().'/assets/img/vcicons/toranj-icon.png',
+                    "category"      => __('BULK GALLERY', 'toranj'),
+                    //'admin_enqueue_js' => array(plugins_url('assets/vc_extend.js', __FILE__)), // VC backend editor
+                    //'admin_enqueue_css' => array(plugins_url('assets/vc_extend_admin.css', __FILE__)), //  VC backend editor
+                    "params"        => array(
+
+                        array(
+                            "type"          => "textfield",
+                            "heading"       => __("Gallery ID", "toranj"),
+                            "param_name"    => "galleryid",
+                            "admin_label"   =>true,
+                            "description"   =>__("Input the numeric id of the bulk gallery, get it from Bulk Gallery at menu","toranj")
+                        ),
+
+                        array(
+                            "type"          => "dropdown",
+                            "heading"       => __("Hover style", "toranj"),
+                            "param_name"        => "overlay_type",
+                            "value"             => array(
+                                                    __('Simple Icon', "toranj")     => "simple-icon",
+                                                    __('Plus light', "toranj")      => "plus-light",
+                                                    __('Plus dark', "toranj")       => "plus-dark",
+                                                    __('Plus colored', "toranj")    => "plus-color"
+                                                ),
+                            "description" => __("Select style", "toranj")
+                        ),
+                        array(
+                            "type"          => "checkbox",
+                            "heading"       => __("Remove item's padding?", "toranj"),
+                            "description"   => __("Remove padding between images?",'toranj'),
+                            "param_name"    => "remove_spaces_between_images",
+                            "value"         => array('yes' => "yes"),
+                        ),
+
+                        array(
+                            "type"          => "textfield",
+                            "heading"       => __("LG column count", "toranj"),
+                            "param_name"    => "lg_cols",
+                            'description'   => __('<code>Integer value</code>. Number of cols for large screen devices','toranj'),
+                            "value"         => "4" 
+                        ),
+                        array(
+                            "type"          => "textfield",
+                            "heading"       => __("MD column count", "toranj"),
+                            "param_name"    => "md_cols",
+                            'description'   => __('<code>Integer value</code>. Number of cols for medium screen devices','toranj'),
+                            "value"         => "3" 
+                        ),
+                        array(
+                            "type"          => "textfield",
+                            "heading"       => __("SM column count", "toranj"),
+                            "param_name"    => "sm_cols",
+                            'description'   => __('<code>Integer value</code>. Number of cols for small devices','toranj'),
+                            "value"         => "2" 
+                        ),
+                        array(
+                            "type"          => "textfield",
+                            "heading"       => __("XS column count", "toranj"),
+                            "param_name"    => "xs_cols",
+                            'description'   => __('<code>Integer value</code>. Number of cols for extra small devices','toranj'),
+                            "value"         => "2" 
+                        ),
+
+
+                    )
+                )
+            );
+        }
+
+
+
     }
 }
 
@@ -4761,8 +5445,27 @@ vc_add_default_templates( $data );
 
 }
 
+if ( defined( 'WPB_VC_VERSION' ) ) {
+
+    //set as theme
+    add_action( 'vc_before_init', 'owlab_vcSetAsTheme' );
 
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     * set the vc as theme and don't prompt for activation
+     * ----------------------------------------------------------------------------------------
+     * @since 1.0.0
+     * @param  void    
+     * @return void
+     */
+    
+    function owlab_vcSetAsTheme() {
+        vc_set_as_theme();
+    }
+
+
+}
 
 
 

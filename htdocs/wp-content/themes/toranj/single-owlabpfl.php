@@ -32,7 +32,12 @@ if ( have_posts() ) : while( have_posts() ) : the_post();
 			case 'regular-dark':
 				include(locate_template(OWLAB_TEMPLATES . '/portfolio/single-regular-dark.php'));
 				break;
-
+			case 'full-light':
+				include(locate_template(OWLAB_TEMPLATES . '/portfolio/single-full-light.php'));
+				break;
+			case 'full-dark':
+				include(locate_template(OWLAB_TEMPLATES . '/portfolio/single-full-dark.php'));
+				break;
 			default:
 				include(locate_template(OWLAB_TEMPLATES . '/portfolio/single-leftside.php'));
 				break;

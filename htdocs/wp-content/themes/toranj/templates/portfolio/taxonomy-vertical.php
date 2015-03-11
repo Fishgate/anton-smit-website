@@ -10,18 +10,18 @@
 
 <!-- Page main wrapper -->
 <div id="main-content" class="abs dark-template">
-	<div class="page-wrapper">
+	
 		
 		<!-- Sidebar -->
 		<div class="page-side ajax-element">
 			<div class="inner-wrapper vcenter-wrapper">
 				<div class="side-content vcenter">
 					<div class="title">
-						<span class="second-part"><?php _e('Browse Group','toranj'); ?></span>
+						<span class="second-part"><?php echo ot_get_option('portfolio_group_upper_title',__('Browse Group','toranj')); ?></span>
 						<span><?php echo $the_group->name; ?></span>
 					</div>
 					
-					<p><?php echo $the_group->description; ?></p>
+					<p><?php echo wpautop($the_group->description); ?></p>
 
 					<?php if (count($the_group_childs) >0 ): ?>
 					
@@ -41,7 +41,7 @@
 		<!-- /Sidebar -->
 
 		<!-- Main Content -->
-		<div class="page-main horizontal-folio-wrapper ajax-element set-height-mobile">
+		<div class="page-main horizontal-folio-wrapper ajax-element set-height-mobile" data-mode="fixed_width" data-default-width="350">
 			<!-- Portflio wrapper -->	
 			<div class="horizontal-folio">
 				
@@ -59,8 +59,9 @@
 				<!-- Portflio Item -->		
 				<div class="gp-item tj-circle-hover">
 					<a href="<?php the_permalink(); ?>" class="ajax-portfolio set-bg">
-						<img src="<?php echo $thumb_url[0] ?>" alt="<?php the_title(); ?>" class="img-responsive">
 
+						<?php owlab_lazy_image($thumb_url, get_the_title(), true); ?>
+						
 						<!-- Item Overlay -->	
 						<div class="tj-overlay">
 							<div class="content">
@@ -105,6 +106,5 @@
 		</div>
 		<div id="ajax-folio-item"></div>
 		<!--Ajax folio-->
-	</div>
 </div>
 <!-- /Page main wrapper -->
